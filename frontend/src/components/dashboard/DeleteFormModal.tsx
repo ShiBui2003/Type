@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
 import { useToast } from "@/components/ui/ToastProvider";
 import * as formsApi from "@/lib/api/forms";
@@ -37,7 +38,7 @@ export function DeleteFormModal({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Delete form?">
-      <p className="mb-4 text-sm text-zinc-600 dark:text-zinc-400">
+      <p className="mb-4 text-sm text-ink-muted">
         Delete &ldquo;{form.title}&rdquo;? This permanently removes the form and
         {form.response_count > 0
           ? ` its ${form.response_count} response${form.response_count === 1 ? "" : "s"}`
@@ -45,19 +46,12 @@ export function DeleteFormModal({
         . This can&apos;t be undone.
       </p>
       <div className="flex justify-end gap-2">
-        <button
-          onClick={onClose}
-          className="rounded px-3 py-1.5 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800"
-        >
+        <button onClick={onClose} className="rounded px-3 py-1.5 text-sm text-ink-muted hover:bg-surface-canvas">
           Cancel
         </button>
-        <button
-          onClick={handleConfirm}
-          disabled={busy}
-          className="rounded bg-red-600 px-3 py-1.5 text-sm text-white hover:bg-red-700 disabled:opacity-50"
-        >
+        <Button variant="danger" onClick={handleConfirm} disabled={busy}>
           Delete
-        </button>
+        </Button>
       </div>
     </Modal>
   );

@@ -265,6 +265,16 @@ Modals (captured: "Add form elements" and "Form settings"):
 - Button row (Form settings): right-aligned "Cancel" (plain text) + "Save" (solid, disabled/muted until a change is made).
 - Entrance animation: inferred from shared slideUp/fade transition-group classes in the stylesheet — enter 175ms cubic-bezier(0.175, 0.885, 0.32, 1.15) with a 200ms delay, exit 125ms ease-out (fade variant is a plain opacity cross-fade at the same timings).
 
+  **CORRECTION (v2 recon):** this "springy" claim was inferred from
+  adjacent CSS class names (slideUp-enter-active) without confirming
+  those classes actually applied to this specific modal. A v2 recon pass
+  directly measured the fadeIn keyframe applied to a real modal and found
+  a plain opacity-only fade on entrance - no scale, no translate, no
+  spring curve. Use the fade timing (opacity cross-fade), not the spring
+  curve, for modal entrance. The spring curve's cubic-bezier value may
+  still be real somewhere else in the app (it wasn't un-measured, just
+  disproven as this modal's actual entrance), but it does not apply here.
+
 Toasts: none appeared naturally during this session — no capture, per instruction not to trigger one artificially. GAP.
 
 Settings screen:

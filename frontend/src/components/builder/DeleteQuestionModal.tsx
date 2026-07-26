@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
 import { useFormBuilder } from "@/context/FormBuilderContext";
 
@@ -21,23 +22,17 @@ export function DeleteQuestionModal({
 
   return (
     <Modal isOpen={questionId != null} onClose={onClose} title="Delete question?">
-      <p className="mb-4 text-sm text-zinc-600 dark:text-zinc-400">
+      <p className="mb-4 text-sm text-ink-muted">
         Delete &ldquo;{question?.title || "Untitled question"}&rdquo;? This can&apos;t be undone,
         though any existing responses to it are kept.
       </p>
       <div className="flex justify-end gap-2">
-        <button
-          onClick={onClose}
-          className="rounded px-3 py-1.5 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800"
-        >
+        <button onClick={onClose} className="rounded px-3 py-1.5 text-sm text-ink-muted hover:bg-surface-canvas">
           Cancel
         </button>
-        <button
-          onClick={handleConfirm}
-          className="rounded bg-red-600 px-3 py-1.5 text-sm text-white hover:bg-red-700"
-        >
+        <Button variant="danger" onClick={handleConfirm}>
           Delete
-        </button>
+        </Button>
       </div>
     </Modal>
   );

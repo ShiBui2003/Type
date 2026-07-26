@@ -13,14 +13,16 @@ export function LivePreviewPanel() {
 
   return (
     <div className="flex h-full items-center justify-center overflow-y-auto bg-surface-panel p-8">
-      {/* Fixed-width, mobile-proportioned card, not a flat full-width
-          panel - matches the real builder's centered canvas mock rather
-          than stretching to fill the column. The card's own background
-          is the form's respondent-facing theme (--form-bg), not our
-          builder chrome color, since this is a preview of what a
-          respondent actually sees. */}
+      {/* Fixed 361x643px mobile-proportioned canvas, not a flat full-
+          width panel and not a rounded phone-mockup card - real Typeform
+          measures this at border-radius: 0, separated from the page by a
+          hairline ring-shadow rather than a visible border. The card's
+          own background is the form's respondent-facing theme
+          (--form-bg), not builder chrome, and font-inter here since this
+          content is respondent-facing (same font /f/[slug] will use once
+          Phase 3 builds it) - admin chrome around it stays system-font. */}
       <div
-        className="flex min-h-150 w-full max-w-95 flex-col justify-center overflow-y-auto rounded-lg p-8 shadow-ring"
+        className="font-inter flex h-[643px] w-[361px] flex-col justify-center overflow-y-auto p-8 shadow-hairline"
         style={{ ...preset.vars, backgroundColor: "var(--form-bg)" } as React.CSSProperties}
       >
         {question ? (

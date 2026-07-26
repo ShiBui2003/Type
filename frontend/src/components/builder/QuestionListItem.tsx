@@ -33,10 +33,10 @@ export function QuestionListItem({
       ref={setNodeRef}
       style={style}
       onClick={onSelect}
-      className={`flex cursor-pointer items-center gap-2 rounded-md border px-2 py-2 text-sm transition-colors duration-200 ease-tf ${
-        isSelected
-          ? "border-ink bg-ink/5 dark:bg-ink/20"
-          : "border-transparent hover:bg-zinc-50 dark:hover:bg-zinc-800"
+      // Barely-there ~6% opacity neutral tint, 8px radius, no colored
+      // accent border - matches the real builder's selected-row state.
+      className={`flex cursor-pointer items-center gap-2 rounded px-2 py-2 text-sm transition-colors duration-200 ease-tf ${
+        isSelected ? "bg-ink/6" : "hover:bg-zinc-50 dark:hover:bg-zinc-800"
       }`}
     >
       <button

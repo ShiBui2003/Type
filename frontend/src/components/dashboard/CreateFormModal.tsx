@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
+import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
 import { useToast } from "@/components/ui/ToastProvider";
 import * as formsApi from "@/lib/api/forms";
@@ -38,22 +39,18 @@ export function CreateFormModal({ isOpen, onClose }: { isOpen: boolean; onClose:
           if (e.key === "Enter") handleCreate();
         }}
         placeholder="Form title"
-        className="mb-4 w-full rounded border border-zinc-300 px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-800"
+        className="mb-4 w-full rounded border border-ink-faint px-3 py-2 text-sm text-ink"
       />
       <div className="flex justify-end gap-2">
         <button
           onClick={onClose}
-          className="rounded px-3 py-1.5 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800"
+          className="rounded px-3 py-1.5 text-sm text-ink-muted hover:bg-surface-canvas"
         >
           Cancel
         </button>
-        <button
-          onClick={handleCreate}
-          disabled={busy || !title.trim()}
-          className="rounded bg-ink px-3 py-1.5 text-sm text-white transition-colors duration-200 ease-tf hover:bg-ink-soft disabled:opacity-50"
-        >
+        <Button onClick={handleCreate} disabled={busy || !title.trim()}>
           Create
-        </button>
+        </Button>
       </div>
     </Modal>
   );

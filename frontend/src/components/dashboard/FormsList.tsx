@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { LayoutGrid, List as ListIcon, Plus } from "lucide-react";
 
+import { Button } from "@/components/ui/Button";
 import * as formsApi from "@/lib/api/forms";
 import type { FormListItem } from "@/lib/types";
 import { CreateFormModal } from "./CreateFormModal";
@@ -46,12 +47,7 @@ export function FormsList() {
     return (
       <div className="flex min-h-screen flex-col items-center gap-3 bg-surface-page p-16 text-center">
         <p className="text-ink-muted">Couldn&apos;t reach the server.</p>
-        <button
-          onClick={refetch}
-          className="rounded-md bg-ink px-4 py-2 text-sm text-white transition-colors duration-200 ease-tf hover:bg-ink-soft"
-        >
-          Retry
-        </button>
+        <Button onClick={refetch}>Retry</Button>
       </div>
     );
   }
@@ -91,23 +87,15 @@ export function FormsList() {
 
         <div className="flex items-center justify-between">
           <h1 className="text-xl font-normal text-ink">Your forms</h1>
-          <button
-            onClick={() => setCreateOpen(true)}
-            className="flex items-center gap-1 rounded-md bg-ink px-3 py-1.5 text-sm text-white transition-colors duration-200 ease-tf hover:bg-ink-soft"
-          >
+          <Button onClick={() => setCreateOpen(true)} className="flex items-center gap-1">
             <Plus className="h-4 w-4" /> New form
-          </button>
+          </Button>
         </div>
 
         {forms.length === 0 ? (
           <div className="flex flex-col items-center gap-3 rounded-md border border-dashed border-ink-faint py-16 text-center">
             <p className="text-ink-muted">No forms yet.</p>
-            <button
-              onClick={() => setCreateOpen(true)}
-              className="rounded-md bg-ink px-4 py-2 text-sm text-white transition-colors duration-200 ease-tf hover:bg-ink-soft"
-            >
-              Create your first form
-            </button>
+            <Button onClick={() => setCreateOpen(true)}>Create your first form</Button>
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">

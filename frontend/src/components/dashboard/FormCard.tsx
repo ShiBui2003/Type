@@ -85,18 +85,19 @@ export function FormCard({ form, onChanged }: { form: FormListItem; onChanged: (
       </div>
 
       <div className="flex items-center gap-2 text-xs">
-        <span
-          className={`rounded-full px-2 py-0.5 ${
-            form.status === "published"
-              ? "bg-green-100 text-green-700"
-              : "bg-surface-panel text-ink-muted"
-          }`}
-        >
-          {form.status === "published" ? "Published" : "Draft"}
-        </span>
-        <span className="text-ink-muted">
-          {form.response_count} response{form.response_count === 1 ? "" : "s"}
-        </span>
+        {/* Draft forms show no badge at all - only Published gets a
+            colored pill - and their stats read as a plain dash rather
+            than "0 responses", since there's nothing to report yet. */}
+        {form.status === "published" ? (
+          <>
+            <span className="rounded-full bg-green-100 px-2 py-0.5 text-green-700">Published</span>
+            <span className="text-ink-muted">
+              {form.response_count} response{form.response_count === 1 ? "" : "s"}
+            </span>
+          </>
+        ) : (
+          <span className="text-ink-muted">—</span>
+        )}
       </div>
 
       <div className="flex items-center gap-3 text-sm">

@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 
 import { useFormBuilder } from "@/context/FormBuilderContext";
 import { useToast } from "@/components/ui/ToastProvider";
+import { Button } from "@/components/ui/Button";
 import { ShareLinkModal } from "@/components/ui/ShareLinkModal";
 import * as formsApi from "@/lib/api/forms";
 
@@ -84,13 +85,9 @@ export function BuilderHeader() {
             Settings
           </Link>
         </nav>
-        <button
-          onClick={handlePublishToggle}
-          disabled={busy}
-          className="rounded-md bg-ink px-3 py-1.5 text-sm font-medium text-white transition-colors duration-200 ease-tf hover:bg-ink-soft disabled:opacity-50"
-        >
+        <Button onClick={handlePublishToggle} disabled={busy}>
           {isPublished ? "Unpublish" : "Publish"}
-        </button>
+        </Button>
       </div>
 
       {form.slug && (

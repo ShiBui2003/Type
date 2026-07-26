@@ -63,17 +63,13 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
             aria-labelledby="modal-title"
             tabIndex={-1}
             className="w-full max-w-md rounded-lg bg-surface-panel p-6 text-ink shadow-ring outline-none dark:bg-zinc-900 dark:text-zinc-100"
-            initial={{ opacity: 0, scale: 0.95, y: 10 }}
-            // Springy entrance (measured on real Typeform modals/popovers),
-            // fast plain fade/scale on exit with no spring - the two are
-            // deliberately different curves, not one shared transition.
-            animate={{
-              opacity: 1,
-              scale: 1,
-              y: 0,
-              transition: { duration: 0.175, delay: 0.2, ease: [0.175, 0.885, 0.32, 1.15] },
-            }}
-            exit={{ opacity: 0, scale: 0.95, y: 10, transition: { duration: 0.125, ease: "easeOut" } }}
+            // Plain opacity-only fade, no scale or slide - a v2 recon
+            // pass directly measured the fadeIn keyframe on a real modal
+            // and disproved the original spec's "springy" claim (see the
+            // correction note in docs/typeform-design-spec.md section 8).
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1, transition: { duration: 0.175, ease: [0.55, 0, 0.1, 1] } }}
+            exit={{ opacity: 0, transition: { duration: 0.125, ease: "easeOut" } }}
             onClick={(e) => e.stopPropagation()}
           >
             <h2 id="modal-title" className="mb-4 text-xl font-normal">
