@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { MoveRight } from "lucide-react";
+import { LogIn, MoveRight } from "lucide-react";
 import {
   DndContext,
   PointerSensor,
@@ -55,6 +55,19 @@ export function QuestionListPanel() {
     >
       <div className="flex flex-col gap-2 p-3 pb-5">
         <h2 className="px-1 text-sm font-medium text-ink">Pages</h2>
+        {/* Welcome screen preview only - clicking this shows the
+            preview-only canvas state in LivePreviewPanel (see there for
+            why there's no editor for it yet). Not draggable, not part
+            of the question list/reorder. */}
+        <button
+          onClick={() => selectQuestion(null)}
+          className={`flex items-center gap-2 rounded px-2 py-2 text-left text-sm transition-colors duration-200 ease-tf ${
+            selectedQuestionId === null ? "bg-ink/6" : "hover:bg-zinc-50"
+          }`}
+        >
+          <LogIn className="h-4 w-4 shrink-0 text-ink-muted" />
+          Welcome screen
+        </button>
         {/* At most one reorder request is ever in flight. dnd-kit's
             DndContext has its own internal effect keyed on the `sensors`
             array, so swapping it to [] while pending (to "disable" drag)

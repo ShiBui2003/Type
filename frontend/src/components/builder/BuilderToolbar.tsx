@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Eye, Palette, Settings2, Smartphone, type LucideIcon } from "lucide-react";
+import { Eye, Palette, Settings2, Smartphone, X, type LucideIcon } from "lucide-react";
 
 import { useFormBuilder } from "@/context/FormBuilderContext";
 import { ThemePicker } from "@/components/settings/ThemePicker";
@@ -56,7 +56,20 @@ function DesignPopover() {
       </button>
       {open && (
         <div className="absolute left-0 z-10 mt-2 w-72 rounded-md bg-surface-panel p-3 shadow-ring">
-          <ThemePicker />
+          <div className="mb-2 flex items-center justify-between">
+            <span className="text-sm font-medium text-ink">Design</span>
+            <button
+              onClick={() => setOpen(false)}
+              aria-label="Close"
+              className="text-ink-muted hover:text-ink"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+          {/* No "My themes"/"Gallery" tabs here - we only have one
+              preset gallery, no saved-custom-themes feature to put in a
+              second tab. */}
+          <ThemePicker showHeading={false} />
         </div>
       )}
     </div>

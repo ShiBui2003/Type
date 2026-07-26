@@ -6,7 +6,7 @@ import { DEFAULT_THEME_KEY, THEME_PRESETS } from "@/lib/constants";
 // Preset swatches, not a custom color picker - our own scoping call for
 // how to satisfy the assignment's "theme" placeholder requirement (see
 // README assumptions), not something the spec itself dictates.
-export function ThemePicker() {
+export function ThemePicker({ showHeading = true }: { showHeading?: boolean }) {
   const { form, patchForm } = useFormBuilder();
   if (!form) return null;
 
@@ -14,7 +14,9 @@ export function ThemePicker() {
 
   return (
     <div className="flex flex-col gap-3">
-      <h2 className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">Theme</h2>
+      {showHeading && (
+        <h2 className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">Theme</h2>
+      )}
       <div className="flex flex-wrap gap-3">
         {THEME_PRESETS.map((preset) => (
           <button

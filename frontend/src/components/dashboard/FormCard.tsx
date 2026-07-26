@@ -118,7 +118,12 @@ export function FormCard({ form, onChanged }: { form: FormListItem; onChanged: (
         onDeleted={onChanged}
       />
       {form.slug && (
-        <ShareLinkModal isOpen={shareOpen} onClose={() => setShareOpen(false)} slug={form.slug} />
+        <ShareLinkModal
+          isOpen={shareOpen}
+          onClose={() => setShareOpen(false)}
+          slug={form.slug}
+          title={form.title}
+        />
       )}
     </div>
   );

@@ -91,7 +91,12 @@ export function BuilderHeader() {
       </div>
 
       {form.slug && (
-        <ShareLinkModal isOpen={shareOpen} onClose={() => setShareOpen(false)} slug={form.slug} />
+        <ShareLinkModal
+          isOpen={shareOpen}
+          onClose={() => setShareOpen(false)}
+          slug={form.slug}
+          title={form.title}
+        />
       )}
     </header>
   );

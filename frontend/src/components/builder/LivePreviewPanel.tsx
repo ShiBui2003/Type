@@ -1,5 +1,7 @@
 "use client";
 
+import { Clock } from "lucide-react";
+
 import { useFormBuilder } from "@/context/FormBuilderContext";
 import { QuestionPreview } from "@/components/preview/QuestionPreview";
 import { DEFAULT_THEME_KEY, THEME_PRESETS } from "@/lib/constants";
@@ -28,7 +30,26 @@ export function LivePreviewPanel() {
         {question ? (
           <QuestionPreview question={question} />
         ) : (
-          <p className="text-center text-zinc-400">Select a question to preview it</p>
+          // Welcome-screen preview only - there's no welcome-screen
+          // EDITOR yet (deferred per the brief's own scope-control
+          // note), so this shows what the first screen will look like
+          // using the form's title as a placeholder, but nothing here is
+          // editable yet. "Takes ~N minutes" is a rough client-side
+          // estimate for display purposes, not stored/real data.
+          <div className="text-center">
+            <h2 className="text-xl font-semibold">{form?.title || "Welcome"}</h2>
+            <button
+              type="button"
+              className="mx-auto mt-6 block rounded-full px-6 py-2 text-sm font-medium"
+              style={{ background: "var(--form-fg)", color: "var(--form-bg)" }}
+            >
+              Start
+            </button>
+            <p className="mt-3 flex items-center justify-center gap-1 text-xs opacity-60">
+              <Clock className="h-3 w-3" />
+              Takes {Math.max(1, Math.ceil((form?.questions.length ?? 0) / 4))} min
+            </p>
+          </div>
         )}
       </div>
     </div>
