@@ -8,6 +8,14 @@ Deployed at `https://type-one-tau.vercel.app` (frontend, Vercel) against
 `https://type-production-7a20.up.railway.app` (backend, Railway,
 SQLite on a persistent volume).
 
+## Tech Stack
+
+- **Frontend**: Next.js 16 (App Router, TypeScript), Tailwind v4, dnd-kit
+  (drag-and-drop), motion (animations)
+- **Backend**: FastAPI, SQLAlchemy 2.0, Pydantic
+- **Database**: SQLite (file-based; a persistent volume in production)
+- **Deployment**: Vercel (frontend), Railway (backend)
+
 ## Setup
 
 **Requirements:** Node 20+, Python 3.11+.
