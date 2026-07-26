@@ -372,7 +372,11 @@ starts before the first's response can land), repeated for a second
 pair (4 questions total), then two rapid-fire deletes back to back —
 10/10 automated checks confirmed every question survived in both the
 rendered DOM and a fresh `GET /api/forms/{id}`, run against a scratch
-form (deleted afterward, local form list confirmed restored).
+form (deleted afterward, local form list confirmed restored). Redeployed
+(commit `d3b2d2a`) and re-confirmed live: both seeded forms' response
+counts unchanged (Customer Feedback Survey 5, Event RSVP 6) via direct
+API check and in the rendered dashboard, and the builder opens cleanly
+against the deployed bundle.
 
 ## Known gaps / deferred items
 
