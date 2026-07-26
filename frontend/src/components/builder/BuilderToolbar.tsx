@@ -1,30 +1,59 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Eye, Palette, Settings2, Smartphone, X, type LucideIcon } from "lucide-react";
+import Link from "next/link";
+import { Monitor, Palette, Settings2, Smartphone, X } from "lucide-react";
 
 import { useFormBuilder } from "@/context/FormBuilderContext";
 import { ThemePicker } from "@/components/settings/ThemePicker";
 import type { QuestionType } from "@/lib/types";
+import type { PreviewDevice } from "./LivePreviewPanel";
 import { AddQuestionMenu } from "./AddQuestionMenu";
 
-// Add content and Design are wired to the exact same functionality
-// already built for the Pages list and the Settings page respectively -
-// AddQuestionMenu and ThemePicker are both self-contained components, so
-// reusing them here (with a different trigger/anchor) needed no new
-// logic, just a second place to render them. Device toggle and Preview
-// stay inert placeholders - not in the brief, not worth building.
-export function BuilderToolbar() {
-  const { addQuestion } = useFormBuilder();
+// Every control in this row does something real. Add content and Design
+// reuse AddQuestionMenu/ThemePicker (self-contained already, so a second
+// trigger needed no new logic); the device toggle resizes the preview
+// canvas; Settings links to the Settings route.
+//
+// A full-screen Preview button used to sit here as an inert placeholder
+// and was removed rather than left dead: the brief's "live preview of the
+// form" is already satisfied by the always-visible canvas that updates
+// per keystroke, and a true full preview of an *unpublished* form would
+// need a new backend endpoint (the public one is slug-based and
+// published-only). Published forms are already previewable end to end via
+// the share link.
+export function BuilderToolbar({
+  device,
+  onDeviceChange,
+}: {
+  device: PreviewDevice;
+  onDeviceChange: (device: PreviewDevice) => void;
+}) {
+  const { addQuestion, formId } = useFormBuilder();
+  const isMobile = device === "mobile";
 
   return (
     <div className="flex items-center gap-1 border-b border-ink-faint bg-surface-canvas px-4 py-2">
       <AddQuestionMenu variant="icon" onSelect={(type: QuestionType) => addQuestion(type)} />
       <DesignPopover />
-      <ToolbarButton icon={Smartphone} label="Desktop view" />
-      <ToolbarButton icon={Eye} label="Preview" />
+      <button
+        onClick={() => onDeviceChange(isMobile ? "desktop" : "mobile")}
+        aria-label={isMobile ? "Switch to desktop preview" : "Switch to mobile preview"}
+        title={isMobile ? "Switch to desktop preview" : "Switch to mobile preview"}
+        aria-pressed={!isMobile}
+        className="flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-sm text-ink-muted transition-colors duration-200 ease-tf hover:bg-surface-panel hover:text-ink"
+      >
+        {isMobile ? <Smartphone className="h-4 w-4" /> : <Monitor className="h-4 w-4" />}
+      </button>
       <div className="flex-1" />
-      <ToolbarButton icon={Settings2} label="Settings" />
+      <Link
+        href={`/forms/${formId}/settings`}
+        aria-label="Settings"
+        title="Settings"
+        className="flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-sm text-ink-muted transition-colors duration-200 ease-tf hover:bg-surface-panel hover:text-ink"
+      >
+        <Settings2 className="h-4 w-4" />
+      </Link>
     </div>
   );
 }
@@ -73,17 +102,5 @@ function DesignPopover() {
         </div>
       )}
     </div>
-  );
-}
-
-function ToolbarButton({ icon: Icon, label }: { icon: LucideIcon; label: string }) {
-  return (
-    <button
-      aria-label={label}
-      title={label}
-      className="flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-sm text-ink-muted transition-colors duration-200 ease-tf hover:bg-surface-panel hover:text-ink"
-    >
-      <Icon className="h-4 w-4" />
-    </button>
   );
 }
