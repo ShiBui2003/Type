@@ -47,6 +47,8 @@ type Action =
   | { type: "patch_form_local"; patch: Partial<Form> }
   | { type: "patch_question_local"; id: number; patch: QuestionPatch }
   | { type: "replace_question"; id: number; question: Question }
+  | { type: "append_question"; question: Question }
+  | { type: "remove_question"; id: number }
   | { type: "set_questions"; questions: Question[] }
   | { type: "select_question"; id: number | null }
   | { type: "save_status"; status: SaveStatus }
@@ -99,6 +101,33 @@ function reducer(state: State, action: Action): State {
             },
           }
         : state;
+    // append/remove build the new array from the reducer's own current
+    // state, never from a callback's closure. addQuestion/deleteQuestion
+    // originally captured state.form.questions, awaited the network call,
+    // then dispatched the precomputed array - two adds within one round
+    // trip made the second dispatch overwrite local state without the
+    // first question (persisted server-side, silently missing from the
+    // UI until reload). Same lost-update class as the Phase 3 stateRef
+    // fix, on the dispatch side instead of the event-listener side.
+    case "append_question":
+      return state.form
+        ? {
+            ...state,
+            form: { ...state.form, questions: [...state.form.questions, action.question] },
+            selectedQuestionId: action.question.id,
+          }
+        : state;
+    case "remove_question": {
+      if (!state.form) return state;
+      const removedIndex = state.form.questions.findIndex((q) => q.id === action.id);
+      const remaining = state.form.questions.filter((q) => q.id !== action.id);
+      let selectedQuestionId = state.selectedQuestionId;
+      if (selectedQuestionId === action.id) {
+        const next = remaining[Math.min(removedIndex, remaining.length - 1)];
+        selectedQuestionId = next ? next.id : null;
+      }
+      return { ...state, form: { ...state.form, questions: remaining }, selectedQuestionId };
+    }
     case "set_questions":
       return state.form ? { ...state, form: { ...state.form, questions: action.questions } } : state;
     case "select_question":
@@ -237,36 +266,26 @@ export function FormBuilderProvider({
       };
       try {
         const question = await questionsApi.createQuestion(formId, payload);
-        dispatch({
-          type: "set_questions",
-          questions: [...(state.form?.questions ?? []), question],
-        });
-        dispatch({ type: "select_question", id: question.id });
+        dispatch({ type: "append_question", question });
         showToast("Question added");
       } catch {
         showToast("Couldn't add question", "error");
       }
     },
-    [formId, state.form, showToast]
+    [formId, showToast]
   );
 
   const deleteQuestion = useCallback(
     async (id: number) => {
       try {
         await questionsApi.deleteQuestion(id);
-        const remaining = (state.form?.questions ?? []).filter((q) => q.id !== id);
-        dispatch({ type: "set_questions", questions: remaining });
-        if (state.selectedQuestionId === id) {
-          const deletedIndex = (state.form?.questions ?? []).findIndex((q) => q.id === id);
-          const next = remaining[Math.min(deletedIndex, remaining.length - 1)];
-          dispatch({ type: "select_question", id: next ? next.id : null });
-        }
+        dispatch({ type: "remove_question", id });
         showToast("Question deleted");
       } catch {
         showToast("Couldn't delete question", "error");
       }
     },
-    [state.form, state.selectedQuestionId, showToast]
+    [showToast]
   );
 
   const reorderQuestion = useCallback(

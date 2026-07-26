@@ -336,6 +336,44 @@ test-harness races (a modal-content wait matching the table's
 "Submitted" column header behind the modal; screenshots firing inside
 the 175ms modal fade) — fixed in the scripts, not the app.
 
+## Post-Phase-4 fix — a third real bug, in Phase 2 code
+
+Found during a final verification pass against the assignment brief
+itself (not a Phase 4 test) — flagged before touching anything, fixed
+only after explicit approval, per the standing rule against changing
+Phase 0-3 code without asking first.
+
+`FormBuilderContext.tsx`'s `addQuestion`/`deleteQuestion` (Phase 2 code,
+unchanged since) each built their next `questions` array from
+`state.form.questions` captured in the callback's closure, then awaited
+the create/delete API call before dispatching that precomputed array
+via `set_questions`. Two adds (or two deletes) close enough together —
+well within reach of a normal double-click, no unusual timing needed —
+meant the second callback's closure still held the *pre-first-call*
+array; dispatching it silently overwrote the first question out of
+local UI state. The server always had it correctly (a reload "fixed"
+it), which is exactly why this survived Phase 2's original verification
+undetected.
+
+Fixed by moving the array-building into the reducer instead of the
+callback: two new actions, `append_question` and `remove_question`,
+compute the next array from the reducer's *own* current state at
+dispatch time, never from a value closed over before the `await`.
+`addQuestion`/`deleteQuestion` now only call the API and dispatch one
+action carrying the minimal payload (the new question, or the deleted
+id) — no array construction outside the reducer. Same root-cause family
+as the Phase 3 `stateRef` fix (stale-closured state racing a network
+round trip), on the dispatch side this time instead of the
+event-listener side.
+
+Verified by reproducing the exact failure on purpose: two "Add
+question" clicks fired with no wait between them (so the second POST
+starts before the first's response can land), repeated for a second
+pair (4 questions total), then two rapid-fire deletes back to back —
+10/10 automated checks confirmed every question survived in both the
+rendered DOM and a fresh `GET /api/forms/{id}`, run against a scratch
+form (deleted afterward, local form list confirmed restored).
+
 ## Known gaps / deferred items
 
 - A few leftover `zinc-*` colors in sub-components and further
