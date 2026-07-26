@@ -15,11 +15,14 @@ import { WelcomeScreen } from "./WelcomeScreen";
 // A plain text input/textarea (not the dropdown's own search box, which
 // captures its own arrow keys) - arrow-key nav must not hijack normal
 // text-cursor movement while typing in one of these.
+// Any field where arrow keys belong to the caret rather than to flow
+// navigation. The dropdown's search box used to be excluded here, which
+// is what let its arrow keys fall through to flow navigation; it now has
+// its own explicit carve-out in the handler below, so this no longer
+// needs to special-case it.
 function isPlainTextInput(el: Element | null): boolean {
   if (!el) return false;
-  if (el instanceof HTMLTextAreaElement) return true;
-  if (el instanceof HTMLInputElement) return el.dataset.respondentDropdownSearch !== "true";
-  return false;
+  return el instanceof HTMLTextAreaElement || el instanceof HTMLInputElement;
 }
 
 export function RespondentFlow() {
@@ -58,6 +61,28 @@ export function RespondentFlow() {
           e.preventDefault();
           goNext();
         }
+        return;
+      }
+
+      // The dropdown's search box owns its own arrow keys: up/down move
+      // its highlighted suggestion, left/right move the caret within
+      // whatever has been typed. Exactly the same reason as the textarea
+      // carve-out above - ChoiceInput calls stopPropagation() in a React
+      // synthetic onKeyDown, which does not stop this native
+      // document-level listener, so without this both handlers would run
+      // and every arrow press would also advance the flow.
+      //
+      // Enter deliberately still falls through: ChoiceInput picks the
+      // highlighted option and the flow then advances, which is one
+      // keystroke to choose-and-continue.
+      if (
+        active instanceof HTMLInputElement &&
+        active.dataset.respondentDropdownSearch === "true" &&
+        (e.key === "ArrowDown" ||
+          e.key === "ArrowUp" ||
+          e.key === "ArrowLeft" ||
+          e.key === "ArrowRight")
+      ) {
         return;
       }
 

@@ -150,16 +150,30 @@ Six tables: `users`, `forms`, `questions`, `question_options`,
   question and locks its options to exactly Yes/No — same schema,
   same respondent-flow component, one less type to special-case
   end-to-end.
-- **The welcome screen is edited in place on the preview canvas**, not
-  in the right-hand panel — clicking the heading in the preview puts a
-  cursor there and you type the real title, matching how the actual
-  Typeform builder works. It's implemented with transparent inputs
-  styled to inherit the canvas theme rather than `contentEditable`,
-  which fights React over caret position when the node re-renders from
-  state. Edits use the same `patchForm` + 800ms debounced autosave as
-  every other field, so there's one save path. An empty `welcome_title`
-  still falls back to the form title at respondent time, which is what
-  the placeholder shows.
+- **Titles are edited in place on the preview canvas**, not in the
+  right-hand panel — clicking the welcome-screen heading or a question
+  heading in the preview puts a cursor there and you type the real
+  text, matching how the actual Typeform builder works. Both use one
+  shared `InlineCanvasInput`: a transparent `<textarea>` styled to
+  inherit the canvas theme rather than `contentEditable`, which fights
+  React over caret position when the node re-renders from state and
+  jumps the cursor to the end mid-word. Edits go through the same
+  `patchForm`/`patchQuestion` + 800ms debounced autosave as every other
+  field, so the canvas and the panel share one save path and stay in
+  sync in both directions. An empty `welcome_title` still falls back to
+  the form title at respondent time, which is what the placeholder
+  shows.
+- **Question *descriptions* are panel-only, not inline.** A description
+  is hidden entirely when empty, so making it inline-editable would mean
+  always rendering a placeholder row on the canvas claiming respondents
+  will see something they won't. The brief names description as a
+  per-question setting, which the panel satisfies.
+- **The canvas title shows no required asterisk**, unlike the respondent
+  view. The title is a `<textarea>`, which can't hold an inline sibling
+  the way the respondent view's heading can, so an asterisk would sit
+  at the far right of the line and read as a layout bug. Required is
+  signalled instead by the red dot in the Pages list and the Required
+  toggle in the panel.
 - **Free-text answers are sampled, not aggregated.** The per-question
   summary shows option counts for choice questions and average +
   distribution for number/rating, but short/long text, email, and date
@@ -171,6 +185,7 @@ Six tables: `users`, `forms`, `questions`, `question_options`,
   so the Results view still shows their stats and answers, badged
   "Removed question" rather than silently dropped.
 
-For the full phase-by-phase build history, the two real bugs found and
-fixed in each phase, and the visual design system — see `HANDOFF.md`.
-Raw Typeform recon notes are in `docs/typeform-design-spec.md`.
+For the full phase-by-phase build history, the real bugs found and fixed
+along the way, the visual design system, and the list of deliberately
+deferred items — see `HANDOFF.md`. Raw Typeform recon notes are in
+`docs/typeform-design-spec.md`.

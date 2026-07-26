@@ -229,7 +229,11 @@ changes needed — the existing `PublicFormOut`/`PublicSubmitIn`/
   box instead); long_text's plain-Enter-inserts-newline vs.
   Ctrl+Enter-advances split; the dropdown combobox captures its own
   arrow keys to move its highlighted suggestion instead of hijacking
-  flow navigation.
+  flow navigation. *(That last claim was written here in Phase 3 but did
+  not actually hold until the fourth bug below was fixed — the intent
+  was implemented in the wrong place. It is true now, and verified by a
+  test that asserts the highlight index moves rather than only that the
+  flow didn't advance.)*
 - **Validation**: `lib/respondentValidation.ts` is a direct mirror of
   `backend/validation.py`'s exact message copy (including the dynamic
   min/max/scale messages) — instant client-side feedback only, never
@@ -378,10 +382,71 @@ counts unchanged (Customer Feedback Survey 5, Event RSVP 6) via direct
 API check and in the rendered dashboard, and the builder opens cleanly
 against the deployed bundle.
 
+## Fourth real bug — the Phase 3 fix that was never applied to its sibling
+
+Found during the final pre-submission re-verification, not by a report.
+This is the most interesting one to be able to explain, because it isn't
+a novel bug: it's the *same* bug as Phase 3 #2, in a component that was
+never updated when that fix landed.
+
+**Symptom.** Arrow keys inside the dropdown's search box advanced the
+whole flow instead of moving the dropdown's highlighted suggestion — so
+you could not arrow through dropdown options at all; pressing Down
+skipped to the next question. Confirmed on both local and the live
+deployment before fixing.
+
+**Root cause — two halves that only bite together.**
+1. `ChoiceInput` tried to shield itself by calling `e.stopPropagation()`
+   inside a React **synthetic** `onKeyDown`. The flow's navigation
+   handler is a native `document.addEventListener`, and a synthetic
+   `stopPropagation()` does not stop it. This is verbatim the Phase 3 #2
+   failure: `long_text` had made exactly this assumption, it was proven
+   wrong, and the carve-out was moved into the global handler — but only
+   for the textarea. The dropdown was left relying on the technique that
+   had already been disproven three lines away in the same file's sibling.
+2. The global handler's guard *actively excluded* the dropdown:
+   `isPlainTextInput()` returned `false` when
+   `data-respondent-dropdown-search === "true"`, so the early
+   `if (inTextInput) return;` never fired and the handler fell through to
+   `goNext()`. Both handlers ran on every arrow press.
+
+**Fix.** An explicit dropdown carve-out in the global handler in
+`RespondentFlow.tsx`, the same shape as the textarea one directly above
+it: if the active element is the dropdown search box and the key is an
+arrow, return and let the combobox own it. Enter deliberately still falls
+through, so one keystroke both picks the highlighted option and advances.
+`isPlainTextInput()` was simplified back to "textarea or input" now that
+the dropdown no longer needs to be special-cased there — the attribute is
+read in exactly one place instead of two that disagreed.
+
+**Verification.** A test that asserts the *positive* behaviour rather
+than only the absence of the old one: the highlight index moves 0→1→2 on
+ArrowDown and back on ArrowUp, the flow stays on the same question,
+Left/Right stay in the search text, and Enter picks the **highlighted**
+option (asserted as "Green", not the first option) and then advances.
+Then the full 21-check keyboard suite across all 8 question types, since
+this touches the shared global handler — confirming no regression to
+`multiple_choice` letter shortcuts or `long_text`'s Ctrl+Enter carve-out,
+both of which live in that same handler.
+
+**Takeaway.** When a bug is caused by a *pattern* (here: trusting
+synthetic `stopPropagation()` against a native listener), fixing the one
+reported instance isn't finishing the job — every sibling using the same
+pattern needs the same treatment. The Phase 3 write-up documented the
+lesson correctly and still only applied it to the component where it had
+been observed.
+
 ## Known gaps / deferred items
 
-- A few leftover `zinc-*` colors in sub-components and further
-  empty-state polish (Phase 2, tracked not dropped).
+- ~~Leftover `zinc-*` colors in sub-components~~ — **closed.** All 31
+  remaining occurrences were replaced with design tokens. Tailwind's
+  `zinc` ramp is a cool blue-tinted grey while the measured tokens are
+  warm plum, so zinc text read visibly blue next to ink text. The
+  live-preview canvas was fixed differently on purpose — it's
+  respondent-facing and themed, so its borders became
+  `currentColor`-relative rather than ink tokens; the hardcoded light
+  zinc borders there were a real bug on the Midnight preset, not just a
+  tint mismatch.
 - `NOTES.md` is referenced by one commit message but was never actually
   created — the content it would have held (slug immutability
   rationale) lives in code comments and in this file instead.
@@ -403,11 +468,31 @@ against the deployed bundle.
   under the brief's "Bonus (Optional)" section — deliberately not built
   and not built-toward (the summary counter strip shows only counters
   backed by data we actually record).
+- Three UI-polish items found in the final recon pass, deferred not
+  dropped: **character counters** on the title/description fields (real
+  Typeform shows them), the **respondent nav chevrons sitting bottom-left**
+  where the real flow puts them bottom-right, and the **welcome-screen
+  placeholder rendering at 40% opacity**, which reads closer to
+  "disabled" than to "click here to edit". None of the three tie to
+  specific wording in the brief — it asks for inline editing and
+  keyboard navigation, both of which work — and there was no time left
+  before submission to justify spending the remaining budget on them
+  over the items that do map to brief requirements. Each is a
+  contained, well-understood change (roughly 10–20 minutes apiece) if
+  they're ever picked up.
+- Description text is editable in the right-hand panel but **not inline
+  on the canvas**, unlike the question title and welcome screen. Left
+  deliberately: description is hidden entirely when empty, so making it
+  inline would mean always rendering a placeholder row that claims
+  respondents will see something they won't. The brief only names
+  description as a per-question *setting*, which is satisfied.
 
 ## What's next
 
-All four core phases are built, deployed, and verified. Remaining:
-the tracked polish items above (leftover `zinc-*` colors, empty-state
-polish), the welcome-screen editor if it's ever pulled into scope, and
-final submission prep (repo/README review against the brief's
-deliverables checklist).
+All four core phases are built, deployed, and verified, and the final
+UI/UX closeout pass is done: inline canvas editing for both the welcome
+screen and question titles, toggle switches replacing checkboxes, the
+full design-token sweep, a Draft status pill, and every inert toolbar
+control either wired up or removed. What remains is the short
+deferred-polish list above — none of it blocking, all of it tracked
+with reasoning rather than silently dropped.
