@@ -1,0 +1,23 @@
+# Node / Next.js
+node_modules/
+.next/
+out/
+
+# Python / FastAPI
+__pycache__/
+*.pyc
+venv/
+.venv/
+
+# Env files
+.env
+.env.local
+
+# SQLite database
+*.db
+*.sqlite
+*.sqlite3
+
+# OS
+.DS_Store
+Thumbs.db
