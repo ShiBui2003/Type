@@ -35,7 +35,7 @@ function FormLayoutInner({ children }: { children: React.ReactNode }) {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center text-zinc-500">
+      <div className="flex min-h-screen items-center justify-center text-ink-muted">
         Loading form…
       </div>
     );

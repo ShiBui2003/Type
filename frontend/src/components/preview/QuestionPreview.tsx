@@ -50,7 +50,7 @@ function QuestionInputPreview({ question }: { question: Question }) {
           disabled
           rows={3}
           placeholder="Type your answer here..."
-          className="w-full resize-none rounded border border-zinc-300 p-2 text-base dark:border-zinc-700"
+          className="w-full resize-none rounded border border-current/25 p-2 text-base"
         />
       );
     case "number":
@@ -81,9 +81,9 @@ function QuestionInputPreview({ question }: { question: Question }) {
           {question.options.map((option, index) => (
             <div
               key={option.id}
-              className="flex min-h-11 items-center gap-3 rounded-md border border-zinc-300 px-3 py-2 dark:border-zinc-700"
+              className="flex min-h-11 items-center gap-3 rounded-md border border-current/25 px-3 py-2"
             >
-              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded border border-zinc-400 text-xs font-medium">
+              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded border border-current/40 text-xs font-medium">
                 {String.fromCharCode(65 + index)}
               </span>
               {option.label}
@@ -96,7 +96,7 @@ function QuestionInputPreview({ question }: { question: Question }) {
       return (
         <div className="flex gap-1">
           {Array.from({ length: scale }).map((_, i) => (
-            <Star key={i} className="h-7 w-7 text-zinc-300 dark:text-zinc-600" />
+            <Star key={i} className="h-7 w-7 opacity-30" />
           ))}
         </div>
       );

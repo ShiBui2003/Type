@@ -15,17 +15,17 @@ export function ThemePicker({ showHeading = true }: { showHeading?: boolean }) {
   return (
     <div className="flex flex-col gap-3">
       {showHeading && (
-        <h2 className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">Theme</h2>
+        <h2 className="text-sm font-semibold text-ink">Theme</h2>
       )}
       <div className="flex flex-wrap gap-3">
         {THEME_PRESETS.map((preset) => (
           <button
             key={preset.key}
             onClick={() => patchForm({ theme_json: { preset: preset.key } })}
-            className={`flex flex-col items-center gap-2 rounded-md border p-2 text-xs transition-shadow duration-200 ease-tf ${
+            className={`flex flex-col items-center gap-2 rounded-md border p-2 text-xs text-ink transition-shadow duration-200 ease-tf ${
               activeKey === preset.key
                 ? "border-ink shadow-ring"
-                : "border-zinc-200 shadow-ring-sm dark:border-zinc-700"
+                : "border-ink-faint shadow-ring-sm"
             }`}
           >
             <span

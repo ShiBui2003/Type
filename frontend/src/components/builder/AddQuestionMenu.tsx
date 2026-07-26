@@ -50,7 +50,7 @@ export function AddQuestionMenu({
       ) : (
         <button
           onClick={() => setOpen((o) => !o)}
-          className="flex w-full items-center justify-center gap-2 rounded-md border border-dashed border-zinc-300 px-3 py-2 text-sm text-zinc-600 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-800"
+          className="flex w-full items-center justify-center gap-2 rounded-md border border-dashed border-ink-faint px-3 py-2 text-sm text-ink-muted transition-colors duration-200 ease-tf hover:bg-surface-panel hover:text-ink"
         >
           <Plus className="h-4 w-4" /> Add question
         </button>

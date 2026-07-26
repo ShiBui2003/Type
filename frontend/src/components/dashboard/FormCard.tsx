@@ -85,9 +85,11 @@ export function FormCard({ form, onChanged }: { form: FormListItem; onChanged: (
       </div>
 
       <div className="flex items-center gap-2 text-xs">
-        {/* Draft forms show no badge at all - only Published gets a
-            colored pill - and their stats read as a plain dash rather
-            than "0 responses", since there's nothing to report yet. */}
+        {/* Both states get a pill so status is legible to someone who has
+            never used this app (the brief asks the list to show
+            draft/published). Draft's is deliberately muted - neutral
+            surface, no color - so Published stays the only thing that
+            draws the eye, which is how real Typeform weights it. */}
         {form.status === "published" ? (
           <>
             <span className="rounded-full bg-green-100 px-2 py-0.5 text-green-700">Published</span>
@@ -96,7 +98,7 @@ export function FormCard({ form, onChanged }: { form: FormListItem; onChanged: (
             </span>
           </>
         ) : (
-          <span className="text-ink-muted">—</span>
+          <span className="rounded-full bg-surface-panel px-2 py-0.5 text-ink-muted">Draft</span>
         )}
       </div>
 

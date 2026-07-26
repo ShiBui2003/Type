@@ -21,7 +21,7 @@ export function QuestionSettingsFields({
         <select
           value={scale}
           onChange={(e) => onChange({ ...settings, scale: Number(e.target.value) })}
-          className="rounded border border-zinc-300 px-2 py-1 dark:border-zinc-700 dark:bg-zinc-800"
+          className="rounded border border-ink-faint px-2 py-1 text-ink"
         >
           <option value={5}>1 to 5</option>
           <option value={10}>1 to 10</option>
@@ -46,7 +46,7 @@ export function QuestionSettingsFields({
                 min: e.target.value === "" ? undefined : Number(e.target.value),
               })
             }
-            className="w-20 rounded border border-zinc-300 px-2 py-1 dark:border-zinc-700 dark:bg-zinc-800"
+            className="w-20 rounded border border-ink-faint px-2 py-1 text-ink"
           />
         </label>
         <label className="flex items-center gap-2">
@@ -60,7 +60,7 @@ export function QuestionSettingsFields({
                 max: e.target.value === "" ? undefined : Number(e.target.value),
               })
             }
-            className="w-20 rounded border border-zinc-300 px-2 py-1 dark:border-zinc-700 dark:bg-zinc-800"
+            className="w-20 rounded border border-ink-faint px-2 py-1 text-ink"
           />
         </label>
       </div>

@@ -63,7 +63,7 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
             aria-modal="true"
             aria-labelledby="modal-title"
             tabIndex={-1}
-            className="w-full max-w-md rounded-lg bg-surface-panel p-6 text-ink shadow-ring outline-none dark:bg-zinc-900 dark:text-zinc-100"
+            className="w-full max-w-md rounded-lg bg-surface-panel p-6 text-ink shadow-ring outline-none"
             // Plain opacity-only fade, no scale or slide - a v2 recon
             // pass directly measured the fadeIn keyframe on a real modal
             // and disproved the original spec's "springy" claim (see the

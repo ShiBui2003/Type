@@ -13,7 +13,7 @@ export default function SettingsPage() {
       <ThemePicker />
 
       <div className="flex flex-col gap-3">
-        <h2 className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">More settings</h2>
+        <h2 className="text-sm font-semibold text-ink">More settings</h2>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <ComingSoonCard
             icon={Zap}

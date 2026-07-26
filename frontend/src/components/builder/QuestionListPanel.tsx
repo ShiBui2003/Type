@@ -62,7 +62,7 @@ export function QuestionListPanel() {
         <button
           onClick={() => selectQuestion(null)}
           className={`flex items-center gap-2 rounded px-2 py-2 text-left text-sm transition-colors duration-200 ease-tf ${
-            selectedQuestionId === null ? "bg-ink/6" : "hover:bg-zinc-50"
+            selectedQuestionId === null ? "bg-ink/6" : "hover:bg-surface-panel"
           }`}
         >
           <LogIn className="h-4 w-4 shrink-0 text-ink-muted" />

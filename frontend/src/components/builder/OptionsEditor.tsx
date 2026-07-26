@@ -56,7 +56,7 @@ export function OptionsEditor({
                 onClick={() => move(index, -1)}
                 disabled={index === 0}
                 aria-label="Move option up"
-                className="text-zinc-400 disabled:opacity-30"
+                className="text-ink-muted disabled:opacity-30"
               >
                 <ChevronUp className="h-3 w-3" />
               </button>
@@ -64,7 +64,7 @@ export function OptionsEditor({
                 onClick={() => move(index, 1)}
                 disabled={index === options.length - 1}
                 aria-label="Move option down"
-                className="text-zinc-400 disabled:opacity-30"
+                className="text-ink-muted disabled:opacity-30"
               >
                 <ChevronDown className="h-3 w-3" />
               </button>
@@ -73,14 +73,14 @@ export function OptionsEditor({
           <input
             value={option.label}
             onChange={(e) => updateLabel(index, e.target.value)}
-            className="flex-1 rounded border border-zinc-300 px-2 py-1 text-sm dark:border-zinc-700 dark:bg-zinc-800"
+            className="flex-1 rounded border border-ink-faint px-2 py-1 text-sm text-ink"
           />
           {!isYesNo && (
             <button
               onClick={() => removeOption(index)}
               disabled={options.length <= MIN_OPTIONS}
               aria-label="Remove option"
-              className="text-zinc-400 hover:text-red-600 disabled:opacity-30"
+              className="text-ink-muted hover:text-red-600 disabled:opacity-30"
             >
               <X className="h-4 w-4" />
             </button>
