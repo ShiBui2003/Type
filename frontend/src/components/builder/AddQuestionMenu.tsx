@@ -33,7 +33,7 @@ export function AddQuestionMenu({ onSelect }: { onSelect: (type: QuestionType) =
         <Plus className="h-4 w-4" /> Add question
       </button>
       {open && (
-        <div className="absolute left-0 z-10 mt-2 grid w-64 grid-cols-2 gap-1 rounded-md border border-zinc-200 bg-white p-2 shadow-lg dark:border-zinc-700 dark:bg-zinc-900">
+        <div className="absolute left-0 z-10 mt-2 grid w-64 grid-cols-2 gap-1 rounded-md bg-surface-panel p-2 shadow-ring dark:bg-zinc-900">
           {QUESTION_TYPES.map((meta) => (
             <button
               key={meta.type}

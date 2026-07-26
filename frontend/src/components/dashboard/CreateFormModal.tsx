@@ -50,7 +50,7 @@ export function CreateFormModal({ isOpen, onClose }: { isOpen: boolean; onClose:
         <button
           onClick={handleCreate}
           disabled={busy || !title.trim()}
-          className="rounded bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-700 disabled:opacity-50"
+          className="rounded bg-ink px-3 py-1.5 text-sm text-white transition-colors duration-200 ease-tf hover:bg-ink-soft disabled:opacity-50"
         >
           Create
         </button>

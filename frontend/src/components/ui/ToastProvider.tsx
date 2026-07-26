@@ -46,9 +46,13 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
               initial={{ opacity: 0, y: 20, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.2 }}
-              className={`pointer-events-auto rounded-md px-4 py-2 text-sm text-white shadow-lg ${
-                toast.variant === "error" ? "bg-red-600" : "bg-zinc-900"
+              // Toasts weren't captured in the design spec (GAP) - extending
+              // the same dominant ease curve used everywhere else rather
+              // than the modal's springy one, which is reserved for
+              // modals/popovers specifically.
+              transition={{ duration: 0.2, ease: [0.55, 0, 0.1, 1] }}
+              className={`pointer-events-auto rounded-md px-4 py-2 text-sm text-white shadow-ring ${
+                toast.variant === "error" ? "bg-red-600" : "bg-ink"
               }`}
             >
               {toast.message}

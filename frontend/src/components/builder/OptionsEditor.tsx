@@ -90,7 +90,7 @@ export function OptionsEditor({
       {!isYesNo && (
         <button
           onClick={addOption}
-          className="flex items-center gap-1 self-start text-sm text-blue-600 hover:underline"
+          className="flex items-center gap-1 self-start text-sm text-ink hover:underline"
         >
           <Plus className="h-4 w-4" /> Add option
         </button>

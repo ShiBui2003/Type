@@ -44,7 +44,7 @@ export function FormsList() {
         <p className="text-zinc-500">Couldn&apos;t reach the server.</p>
         <button
           onClick={refetch}
-          className="rounded-md bg-zinc-900 px-4 py-2 text-sm text-white hover:bg-zinc-700"
+          className="rounded-md bg-ink px-4 py-2 text-sm text-white transition-colors duration-200 ease-tf hover:bg-ink-soft"
         >
           Retry
         </button>
@@ -62,7 +62,7 @@ export function FormsList() {
         <h1 className="text-xl font-semibold">Your forms</h1>
         <button
           onClick={() => setCreateOpen(true)}
-          className="flex items-center gap-1 rounded-md bg-blue-600 px-3 py-1.5 text-sm text-white hover:bg-blue-700"
+          className="flex items-center gap-1 rounded-md bg-ink px-3 py-1.5 text-sm text-white transition-colors duration-200 ease-tf hover:bg-ink-soft"
         >
           <Plus className="h-4 w-4" /> New form
         </button>
@@ -73,7 +73,7 @@ export function FormsList() {
           <p className="text-zinc-500">No forms yet.</p>
           <button
             onClick={() => setCreateOpen(true)}
-            className="rounded-md bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
+            className="rounded-md bg-ink px-4 py-2 text-sm text-white transition-colors duration-200 ease-tf hover:bg-ink-soft"
           >
             Create your first form
           </button>

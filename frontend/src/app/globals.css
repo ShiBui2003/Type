@@ -3,6 +3,50 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  /* Design tokens measured from the real Typeform admin UI - see
+     docs/typeform-design-spec.md. Applied to our own builder/dashboard
+     chrome, not to respondent-facing form themes (those stay driven by
+     THEME_PRESETS in lib/constants.ts). */
+  --tf-ink: #3c323e;
+  --tf-ink-soft: #4c414e;
+  --tf-ink-muted: #655d67;
+  --tf-ink-faint: #e5e4e5;
+
+  --tf-surface-page: #fafafa;
+  --tf-surface-panel: #f7f7f8;
+  --tf-surface-canvas: #ffffff;
+
+  --tf-accent-promo: #177767;
+  --tf-accent-ai: #d97757;
+
+  --tf-border: rgba(81, 76, 84, 0.15);
+  --tf-border-ring: rgba(84, 80, 88, 0.09);
+  --tf-border-ring-sm: rgba(87, 84, 91, 0.06);
+  --tf-backdrop: rgba(68, 60, 71, 0.8);
+
+  --tf-fs-xs: 13px;
+  --tf-fs-sm: 14px;
+  --tf-fs-base: 16px;
+  --tf-fs-lg: 21px;
+  --tf-fs-xl: 24px;
+
+  --tf-radius-sm: 6px;
+  --tf-radius: 8px;
+  --tf-radius-md: 12px;
+  --tf-radius-lg: 16px;
+
+  --tf-shadow-ring-sm: 0 0 0 2px rgba(87, 84, 91, 0.06);
+  --tf-shadow-ring: 0 0 0 3px rgba(84, 80, 88, 0.09);
+  --tf-shadow-ai-glow:
+    0 40px 80px 0 rgba(217, 119, 87, 0.24), 0 4px 14px 0 rgba(217, 119, 87, 0.24);
+
+  /* Verbatim from computed CSS rules on the real app */
+  --tf-ease: cubic-bezier(0.55, 0, 0.1, 1);
+  --tf-ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.15);
+  --tf-dur-fast: 150ms;
+  --tf-dur-base: 200ms;
+  --tf-dur-med: 300ms;
 }
 
 @theme inline {
@@ -10,6 +54,35 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  --color-ink: var(--tf-ink);
+  --color-ink-soft: var(--tf-ink-soft);
+  --color-ink-muted: var(--tf-ink-muted);
+  --color-ink-faint: var(--tf-ink-faint);
+  --color-surface-page: var(--tf-surface-page);
+  --color-surface-panel: var(--tf-surface-panel);
+  --color-surface-canvas: var(--tf-surface-canvas);
+  --color-accent-promo: var(--tf-accent-promo);
+  --color-accent-ai: var(--tf-accent-ai);
+  --color-backdrop: var(--tf-backdrop);
+
+  --radius-sm: var(--tf-radius-sm);
+  --radius: var(--tf-radius);
+  --radius-md: var(--tf-radius-md);
+  --radius-lg: var(--tf-radius-lg);
+
+  --shadow-ring-sm: var(--tf-shadow-ring-sm);
+  --shadow-ring: var(--tf-shadow-ring);
+  --shadow-ai-glow: var(--tf-shadow-ai-glow);
+
+  --ease-tf: var(--tf-ease);
+  --ease-tf-spring: var(--tf-ease-spring);
+
+  --text-xs: var(--tf-fs-xs);
+  --text-sm: var(--tf-fs-sm);
+  --text-base: var(--tf-fs-base);
+  --text-lg: var(--tf-fs-lg);
+  --text-xl: var(--tf-fs-xl);
 }
 
 @media (prefers-color-scheme: dark) {

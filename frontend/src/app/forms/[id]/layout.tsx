@@ -45,7 +45,7 @@ function FormLayoutInner({ children }: { children: React.ReactNode }) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center gap-4">
         <p className="text-lg font-medium">Form not found</p>
-        <Link href="/" className="text-blue-600 underline">
+        <Link href="/" className="text-ink underline">
           Back to dashboard
         </Link>
       </div>

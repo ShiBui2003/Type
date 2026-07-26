@@ -36,7 +36,7 @@ export function ShareLinkModal({
         />
         <button
           onClick={handleCopy}
-          className="rounded bg-zinc-900 px-3 py-2 text-sm text-white hover:bg-zinc-700"
+          className="rounded bg-ink px-3 py-2 text-sm text-white transition-colors duration-200 ease-tf hover:bg-ink-soft"
         >
           Copy
         </button>

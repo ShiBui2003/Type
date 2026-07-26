@@ -63,7 +63,7 @@ export function FormCard({ form, onChanged }: { form: FormListItem; onChanged: (
             <MoreVertical className="h-4 w-4" />
           </button>
           {menuOpen && (
-            <div className="absolute right-0 z-10 mt-1 w-40 rounded-md border border-zinc-200 bg-white py-1 text-sm shadow-lg dark:border-zinc-700 dark:bg-zinc-900">
+            <div className="absolute right-0 z-10 mt-1 w-40 rounded-md bg-surface-panel py-1 text-sm shadow-ring dark:bg-zinc-900">
               <button
                 onClick={handleDuplicate}
                 className="flex w-full items-center gap-2 px-3 py-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-800"
@@ -100,7 +100,7 @@ export function FormCard({ form, onChanged }: { form: FormListItem; onChanged: (
       </div>
 
       <div className="flex items-center gap-3 text-sm">
-        <Link href={`/forms/${form.id}`} className="text-blue-600 hover:underline">
+        <Link href={`/forms/${form.id}`} className="text-ink hover:underline">
           Open builder
         </Link>
         {form.status === "published" && form.slug && (

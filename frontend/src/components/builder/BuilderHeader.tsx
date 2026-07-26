@@ -73,13 +73,13 @@ export function BuilderHeader() {
         <nav className="flex overflow-hidden rounded-md border border-zinc-200 text-sm dark:border-zinc-700">
           <Link
             href={`/forms/${formId}`}
-            className={`px-3 py-1.5 ${!isSettingsTab ? "bg-zinc-900 text-white" : ""}`}
+            className={`px-3 py-1.5 transition-colors duration-200 ease-tf ${!isSettingsTab ? "bg-ink text-white" : ""}`}
           >
             Build
           </Link>
           <Link
             href={`/forms/${formId}/settings`}
-            className={`px-3 py-1.5 ${isSettingsTab ? "bg-zinc-900 text-white" : ""}`}
+            className={`px-3 py-1.5 transition-colors duration-200 ease-tf ${isSettingsTab ? "bg-ink text-white" : ""}`}
           >
             Settings
           </Link>
@@ -87,7 +87,7 @@ export function BuilderHeader() {
         <button
           onClick={handlePublishToggle}
           disabled={busy}
-          className="rounded-md bg-blue-600 px-3 py-1.5 text-sm font-medium text-white disabled:opacity-50"
+          className="rounded-md bg-ink px-3 py-1.5 text-sm font-medium text-white transition-colors duration-200 ease-tf hover:bg-ink-soft disabled:opacity-50"
         >
           {isPublished ? "Unpublish" : "Publish"}
         </button>

@@ -47,7 +47,7 @@ export function QuestionEditorPanel() {
         <input
           value={question.title}
           onChange={(e) => patchQuestion(question.id, { title: e.target.value })}
-          className="w-full border-b border-zinc-300 bg-transparent pb-1 text-lg font-medium outline-none focus:border-blue-500 dark:border-zinc-700"
+          className="w-full border-b border-zinc-300 bg-transparent pb-1 text-lg font-medium outline-none transition-colors duration-200 ease-tf focus:border-ink dark:border-zinc-700"
         />
       </div>
 
@@ -66,6 +66,7 @@ export function QuestionEditorPanel() {
       <label className="flex items-center gap-2 text-sm">
         <input
           type="checkbox"
+          className="accent-ink"
           checked={question.is_required}
           onChange={(e) => patchQuestion(question.id, { is_required: e.target.checked })}
         />
@@ -76,6 +77,7 @@ export function QuestionEditorPanel() {
         <label className="flex items-center gap-2 text-sm">
           <input
             type="checkbox"
+            className="accent-ink"
             checked={isYesNo}
             onChange={(e) => handleYesNoToggle(e.target.checked)}
           />

@@ -33,9 +33,9 @@ export function QuestionListItem({
       ref={setNodeRef}
       style={style}
       onClick={onSelect}
-      className={`flex cursor-pointer items-center gap-2 rounded-md border px-2 py-2 text-sm ${
+      className={`flex cursor-pointer items-center gap-2 rounded-md border px-2 py-2 text-sm transition-colors duration-200 ease-tf ${
         isSelected
-          ? "border-blue-500 bg-blue-50 dark:bg-blue-950"
+          ? "border-ink bg-ink/5 dark:bg-ink/20"
           : "border-transparent hover:bg-zinc-50 dark:hover:bg-zinc-800"
       }`}
     >

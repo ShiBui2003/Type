@@ -20,10 +20,10 @@ export function ThemePicker() {
           <button
             key={preset.key}
             onClick={() => patchForm({ theme_json: { preset: preset.key } })}
-            className={`flex flex-col items-center gap-2 rounded-md border p-2 text-xs ${
+            className={`flex flex-col items-center gap-2 rounded-md border p-2 text-xs transition-shadow duration-200 ease-tf ${
               activeKey === preset.key
-                ? "border-blue-500 ring-2 ring-blue-200 dark:ring-blue-900"
-                : "border-zinc-200 dark:border-zinc-700"
+                ? "border-ink shadow-ring"
+                : "border-zinc-200 shadow-ring-sm dark:border-zinc-700"
             }`}
           >
             <span
