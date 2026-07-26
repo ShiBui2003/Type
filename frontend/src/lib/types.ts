@@ -100,3 +100,41 @@ export interface ReorderPayload {
   after_id: number | null;
   before_id: number | null;
 }
+
+// Mirrors backend/schemas.py's Public* models - the respondent-safe
+// subset returned by /api/public/forms/{slug} (no id/status/slug on the
+// form itself, no deleted questions, options without position).
+export interface PublicOption {
+  id: number;
+  label: string;
+}
+
+export interface PublicQuestion {
+  id: number;
+  type: QuestionType;
+  title: string;
+  description: string | null;
+  is_required: boolean;
+  settings_json: Record<string, unknown> | null;
+  options: PublicOption[];
+}
+
+export interface PublicForm {
+  title: string;
+  welcome_title: string | null;
+  welcome_description: string | null;
+  thank_you_title: string | null;
+  thank_you_description: string | null;
+  theme_json: Record<string, unknown> | null;
+  questions: PublicQuestion[];
+}
+
+export interface PublicAnswer {
+  question_id: number;
+  value: unknown;
+}
+
+export interface PublicSubmitResult {
+  thank_you_title: string | null;
+  thank_you_description: string | null;
+}
