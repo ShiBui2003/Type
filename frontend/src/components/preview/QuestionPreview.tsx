@@ -19,22 +19,21 @@ export function QuestionPreview({ question }: { question: Question }) {
   return (
     <div className="flex flex-col gap-4" style={{ color: "var(--form-fg)" }}>
       <div>
-        {/* The required marker sits after the field rather than inside
-            the heading text: a <textarea> can't contain a sibling
-            element the way the respondent view's <h1> can. Same
-            information, one line down in the DOM. */}
-        <div className="flex items-start gap-1">
-          <InlineCanvasInput
-            value={question.title}
-            onChange={(title) => patchQuestion(question.id, { title })}
-            placeholder="Untitled question"
-            ariaLabel="Question title"
-            className="text-xl font-semibold"
-          />
-          {question.is_required && (
-            <span className="mt-1 shrink-0 text-xl font-semibold text-red-500">*</span>
-          )}
-        </div>
+        {/* No required asterisk here, unlike the respondent view. The
+            title is a <textarea> so an asterisk can't sit inline after
+            the text the way it can inside the respondent's <h1>; parked
+            at the end of the line instead it reads as a layout bug.
+            Required status is already signalled twice in the builder -
+            the red dot in the Pages list and the Required toggle in the
+            right panel - so the canvas drops it rather than showing it
+            in the wrong place. */}
+        <InlineCanvasInput
+          value={question.title}
+          onChange={(title) => patchQuestion(question.id, { title })}
+          placeholder="Untitled question"
+          ariaLabel="Question title"
+          className="text-xl font-semibold"
+        />
         {question.description && (
           <p className="mt-1 text-sm opacity-70">{question.description}</p>
         )}

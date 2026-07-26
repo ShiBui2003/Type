@@ -1,6 +1,7 @@
 "use client";
 
 import { useFormBuilder } from "@/context/FormBuilderContext";
+import { Toggle } from "@/components/ui/Toggle";
 import { QUESTION_TYPE_MAP } from "@/lib/constants";
 import type { OptionIn } from "@/lib/types";
 import { OptionsEditor } from "./OptionsEditor";
@@ -63,26 +64,14 @@ export function QuestionEditorPanel() {
         />
       </div>
 
-      <label className="flex items-center gap-2 text-sm">
-        <input
-          type="checkbox"
-          className="accent-ink"
-          checked={question.is_required}
-          onChange={(e) => patchQuestion(question.id, { is_required: e.target.checked })}
-        />
-        Required
-      </label>
+      <Toggle
+        checked={question.is_required}
+        onChange={(checked) => patchQuestion(question.id, { is_required: checked })}
+        label="Required"
+      />
 
       {question.type === "multiple_choice" && (
-        <label className="flex items-center gap-2 text-sm">
-          <input
-            type="checkbox"
-            className="accent-ink"
-            checked={isYesNo}
-            onChange={(e) => handleYesNoToggle(e.target.checked)}
-          />
-          Yes/No question
-        </label>
+        <Toggle checked={isYesNo} onChange={handleYesNoToggle} label="Yes/No question" />
       )}
 
       {meta.hasOptions && (
