@@ -150,11 +150,16 @@ Six tables: `users`, `forms`, `questions`, `question_options`,
   question and locks its options to exactly Yes/No — same schema,
   same respondent-flow component, one less type to special-case
   end-to-end.
-- **Welcome screen has a live preview but no editor yet.** The builder
-  shows exactly what a respondent will see (falling back to the form's
-  title), and the real `/f/[slug]` flow renders it for real — but
-  there's no Settings UI yet to set `welcome_title`/
-  `welcome_description`, so they're unset on every form today.
+- **The welcome screen is edited in place on the preview canvas**, not
+  in the right-hand panel — clicking the heading in the preview puts a
+  cursor there and you type the real title, matching how the actual
+  Typeform builder works. It's implemented with transparent inputs
+  styled to inherit the canvas theme rather than `contentEditable`,
+  which fights React over caret position when the node re-renders from
+  state. Edits use the same `patchForm` + 800ms debounced autosave as
+  every other field, so there's one save path. An empty `welcome_title`
+  still falls back to the form title at respondent time, which is what
+  the placeholder shows.
 - **Free-text answers are sampled, not aggregated.** The per-question
   summary shows option counts for choice questions and average +
   distribution for number/rating, but short/long text, email, and date

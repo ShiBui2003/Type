@@ -385,11 +385,20 @@ against the deployed bundle.
 - `NOTES.md` is referenced by one commit message but was never actually
   created — the content it would have held (slug immutability
   rationale) lives in code comments and in this file instead.
-- Welcome-screen *editor* (Settings) is still deferred per the brief's
-  own scope-control note — only the welcome-screen *preview* exists in
-  the builder, and the real interactive `WelcomeScreen` in the
-  respondent flow reads directly from `form.welcome_title`/
-  `welcome_description` (empty until a real editor exists to set them).
+- ~~Welcome-screen editor deferred~~ — **closed.** The welcome screen is
+  now edited inline on the preview canvas itself (click the heading, type
+  in place), which is how the real builder works and avoids adding
+  another side-panel field. Everything downstream already existed
+  (`welcome_title`/`welcome_description` in the schema, the PATCH
+  endpoint, and the respondent `WelcomeScreen`), so only the editor was
+  missing.
+- Three toolbar controls were inert placeholders and were dealt with
+  rather than left looking clickable: the full-screen Preview button was
+  **removed** (the brief's "live preview" is already met by the
+  always-visible canvas, and previewing an *unpublished* form would need
+  a new backend endpoint — the public one is slug-based and
+  published-only), while the device toggle and Settings icon were
+  **wired up** for real.
 - CSV export and partial-response/completion-rate tracking: both listed
   under the brief's "Bonus (Optional)" section — deliberately not built
   and not built-toward (the summary counter strip shows only counters
