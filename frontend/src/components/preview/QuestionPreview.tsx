@@ -1,21 +1,40 @@
+"use client";
+
 import { Star } from "lucide-react";
 
+import { useFormBuilder } from "@/context/FormBuilderContext";
 import type { Question } from "@/lib/types";
+import { InlineCanvasInput } from "./InlineCanvasInput";
 
-// Read-only mockup of one question, styled like the respondent view will
-// be. Deliberately NOT shared with Phase 3's respondent flow yet -
-// Phase 3's actual needs (transitions, validation, progress) aren't known
-// yet, so extracting a shared renderer now risks guessing wrong; this
-// becomes an easy, well-justified refactor once Phase 3 exists as the
-// real second call site.
+// Mockup of one question, styled like the respondent view. The inputs
+// below are non-interactive (they mock what a respondent sees), but the
+// title is editable in place - clicking it puts a cursor on the canvas
+// itself, the same interaction as the welcome screen, rather than
+// sending you to the right-hand panel. Writes go through the existing
+// patchQuestion + 800ms debounced autosave, so the side panel and the
+// canvas share one save path and stay in sync live.
 export function QuestionPreview({ question }: { question: Question }) {
+  const { patchQuestion } = useFormBuilder();
+
   return (
     <div className="flex flex-col gap-4" style={{ color: "var(--form-fg)" }}>
       <div>
-        <h3 className="text-xl font-semibold">
-          {question.title || "Untitled question"}
-          {question.is_required && <span className="ml-1 text-red-500">*</span>}
-        </h3>
+        {/* The required marker sits after the field rather than inside
+            the heading text: a <textarea> can't contain a sibling
+            element the way the respondent view's <h1> can. Same
+            information, one line down in the DOM. */}
+        <div className="flex items-start gap-1">
+          <InlineCanvasInput
+            value={question.title}
+            onChange={(title) => patchQuestion(question.id, { title })}
+            placeholder="Untitled question"
+            ariaLabel="Question title"
+            className="text-xl font-semibold"
+          />
+          {question.is_required && (
+            <span className="mt-1 shrink-0 text-xl font-semibold text-red-500">*</span>
+          )}
+        </div>
         {question.description && (
           <p className="mt-1 text-sm opacity-70">{question.description}</p>
         )}

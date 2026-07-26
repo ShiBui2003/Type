@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import { Clock } from "lucide-react";
 
 import { useFormBuilder } from "@/context/FormBuilderContext";
+import { InlineCanvasInput } from "@/components/preview/InlineCanvasInput";
 import { QuestionPreview } from "@/components/preview/QuestionPreview";
 import { DEFAULT_THEME_KEY, THEME_PRESETS } from "@/lib/constants";
 
@@ -48,11 +48,8 @@ export function LivePreviewPanel({ device = "mobile" }: { device?: PreviewDevice
 // The welcome screen is edited in place on the canvas - clicking the
 // heading puts a cursor in the real preview rather than focusing a
 // separate side-panel field, which is how the actual Typeform builder
-// works. These are transparent inputs styled to inherit the canvas's
-// theme typography, not contentEditable: with contentEditable, React
-// re-rendering the node from state fights the browser's own cursor
-// position (caret jumps to the end mid-word). An input has no such
-// conflict and gives the same in-place editing feel.
+// works. See InlineCanvasInput for why it's a textarea and not
+// contentEditable.
 //
 // Writes go through the same patchForm + 800ms debounced autosave the
 // side panel uses, so there's one save path, not two.
@@ -62,7 +59,7 @@ function WelcomeScreenEditor() {
 
   return (
     <div className="text-center">
-      <AutoGrowTextarea
+      <InlineCanvasInput
         value={form.welcome_title ?? ""}
         onChange={(value) => patchForm({ welcome_title: value })}
         // Empty welcome_title falls back to the form title at respondent
@@ -71,14 +68,14 @@ function WelcomeScreenEditor() {
         // will actually see.
         placeholder={form.title || "Welcome"}
         ariaLabel="Welcome screen title"
-        className="text-xl font-semibold"
+        className="text-center text-xl font-semibold"
       />
-      <AutoGrowTextarea
+      <InlineCanvasInput
         value={form.welcome_description ?? ""}
         onChange={(value) => patchForm({ welcome_description: value })}
         placeholder="Add a description (optional)"
         ariaLabel="Welcome screen description"
-        className="mt-2 text-sm opacity-70"
+        className="mt-2 text-center text-sm opacity-70"
       />
       <button
         type="button"
@@ -96,42 +93,3 @@ function WelcomeScreenEditor() {
   );
 }
 
-function AutoGrowTextarea({
-  value,
-  onChange,
-  placeholder,
-  ariaLabel,
-  className,
-}: {
-  value: string;
-  onChange: (value: string) => void;
-  placeholder: string;
-  ariaLabel: string;
-  className: string;
-}) {
-  const ref = useRef<HTMLTextAreaElement>(null);
-
-  // Height follows content so a long title wraps instead of scrolling
-  // inside a fixed-height box. Runs on every render because the value can
-  // change from outside this component (e.g. the header's title field
-  // feeding the placeholder).
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    el.style.height = "auto";
-    el.style.height = `${el.scrollHeight}px`;
-  });
-
-  return (
-    <textarea
-      ref={ref}
-      rows={1}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      placeholder={placeholder}
-      aria-label={ariaLabel}
-      spellCheck={false}
-      className={`w-full resize-none overflow-hidden border-0 bg-transparent p-0 text-center outline-none placeholder:opacity-40 ${className}`}
-    />
-  );
-}
