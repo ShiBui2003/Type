@@ -14,8 +14,9 @@ const FOCUSABLE_SELECTOR =
   'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
 
 // The one reusable modal (backdrop, focus trap, Escape-to-close, animated
-// entrance) - used only for the 4 cases the brief names: delete-form,
-// delete-question, share-link, create-form. Never window.confirm/alert.
+// entrance) - used for the 4 cases the brief names (delete-form,
+// delete-question, share-link, create-form) plus the Phase 4
+// response-detail view. Never window.confirm/alert.
 export function Modal({ isOpen, onClose, title, children }: ModalProps) {
   const dialogRef = useRef<HTMLDivElement>(null);
 

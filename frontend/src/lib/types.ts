@@ -138,3 +138,54 @@ export interface PublicSubmitResult {
   thank_you_title: string | null;
   thank_you_description: string | null;
 }
+
+// Mirrors backend/schemas.py's ResponseOut/AnswerOut. `value` is
+// polymorphic by question_type (see _answer_value() in routers/forms.py):
+// {option_id, label} for choice types, number for number/rating, string
+// for text types - or the raw value_json fallback when the typed column
+// was nulled out (e.g. the chosen option was later deleted).
+export interface ResponseAnswer {
+  question_id: number;
+  question_title: string;
+  question_type: QuestionType;
+  value: unknown;
+}
+
+export interface ResponseDetail {
+  id: number;
+  started_at: string;
+  submitted_at: string | null;
+  is_complete: boolean;
+  answers: ResponseAnswer[];
+}
+
+// Mirrors FormSummaryOut/QuestionSummaryOut: exactly one of
+// options/average+distribution/samples is populated per question_type,
+// the rest stay null (same branch logic as the backend).
+export interface OptionCount {
+  label: string;
+  count: number;
+  percentage: number;
+}
+
+export interface ValueCount {
+  value: number;
+  count: number;
+}
+
+export interface QuestionSummary {
+  question_id: number;
+  question_title: string;
+  question_type: QuestionType;
+  total_answers: number;
+  options: OptionCount[] | null;
+  average: number | null;
+  distribution: ValueCount[] | null;
+  samples: string[] | null;
+}
+
+export interface FormSummary {
+  form_id: number;
+  response_count: number;
+  questions: QuestionSummary[];
+}

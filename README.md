@@ -147,10 +147,16 @@ Six tables: `users`, `forms`, `questions`, `question_options`,
   title), and the real `/f/[slug]` flow renders it for real — but
   there's no Settings UI yet to set `welcome_title`/
   `welcome_description`, so they're unset on every form today.
-- **Results/responses dashboard is not built on the frontend yet.**
-  The backend endpoints above (`.../responses`, `.../summary`) exist,
-  are seeded with real data, and are ready to consume — the results UI
-  itself is the next piece of work, not started as of this commit.
+- **Free-text answers are sampled, not aggregated.** The per-question
+  summary shows option counts for choice questions and average +
+  distribution for number/rating, but short/long text, email, and date
+  answers surface the 5 most recent as "Latest answers" — there's no
+  meaningful aggregate for free text, so the results view doesn't
+  pretend there is one.
+- **The summary includes removed questions on purpose.** Soft-deleted
+  questions keep their historical answers (see the schema notes above),
+  so the Results view still shows their stats and answers, badged
+  "Removed question" rather than silently dropped.
 
 For the full phase-by-phase build history, the two real bugs found and
 fixed in each phase, and the visual design system — see `HANDOFF.md`.

@@ -7,8 +7,8 @@ without needing to dig through commit history or chat logs.
 ## What this is
 
 A functional Typeform clone: a drag-and-drop form builder, a full-screen
-animated one-question-at-a-time respondent flow, and (not yet built) a
-results dashboard with summary stats.
+animated one-question-at-a-time respondent flow, and a results dashboard
+with per-question summary stats and individual response detail.
 
 - `frontend/` — Next.js 16 (App Router, TypeScript, Tailwind v4)
 - `backend/` — FastAPI + SQLAlchemy 2.0 + SQLite
@@ -100,9 +100,9 @@ POST   /api/forms/{id}/questions           create question (+ options)
 PATCH  /api/questions/{id}                 update question (+ sync options)
 DELETE /api/questions/{id}                 soft delete
 PATCH  /api/forms/{id}/questions/reorder   {question_id, after_id, before_id}
-GET    /api/forms/{id}/responses           list responses (Phase 4 will use this)
-GET    /api/responses/{id}                 single response detail
-GET    /api/forms/{id}/summary             aggregate stats (Phase 4)
+GET    /api/forms/{id}/responses           list responses (Results table)
+GET    /api/responses/{id}                 single response detail (Results modal)
+GET    /api/forms/{id}/summary             aggregate stats (Results summary)
 
 GET    /api/public/forms/{slug}            respondent-safe form shape
 POST   /api/public/forms/{slug}/responses  submit; 422 with {errors: {question_id: message}}
@@ -279,6 +279,63 @@ the live Railway database) were deleted afterward via direct API
 calls, confirmed via `curl` before and after each cleanup so the real
 seeded forms' response counts were never touched.
 
+## Phase 4 — results dashboard
+
+A "Results" tab in the builder nav (Build / Results / Settings) at
+`/forms/{id}/results`, living under the existing `/forms/[id]` layout so
+it gets `FormBuilderContext` (and the live question order) for free.
+No backend changes — all three Phase 1 endpoints were confirmed against
+their actual code before building, and their shapes matched exactly.
+
+- **Summary sub-tab** (default): a counter strip in the spec's measured
+  Insights style (response count + latest-response time only — real
+  Typeform also shows Views/Starts/Completion rate there, all of which
+  need partial-response tracking that's explicitly out of scope, so no
+  fabricated counters), then one card per question. Which body a card
+  renders is driven by which branch the backend populated: option bars
+  with count + percentage (choice types, incl. the Yes/No variant),
+  average + value distribution (number/rating), or the 5 latest answers
+  (text/email/date — free text isn't aggregated by design).
+- **Responses sub-tab**: table of submissions (numbered oldest-first so
+  a response keeps its number as new ones arrive), submitted time,
+  answer count. Row click or an explicit View button (the focusable
+  control for keyboard users) opens a detail modal that fetches
+  `GET /api/responses/{id}` and walks the *live* form's questions in
+  position order — answers arrive in insertion order from the backend —
+  showing "—" for unanswered ones; answers to soft-deleted questions
+  are appended with a "Removed question" badge, and a choice answer
+  whose option was later deleted renders "(option removed)" (the
+  value_json fallback carries only the dead option id, which shouldn't
+  leak to the UI).
+- **Empty state**: the spec's measured "No responses" layout (21px/400
+  heading). The real Typeform pairs it with a "Generate test response"
+  button — deliberately omitted (it fabricates data); "Share your form"
+  opens the existing ShareLinkModal on published forms, and drafts get
+  publish-first copy with no dead button.
+- The response-table row structure and detail-modal layout are **our own
+  design** on the established token system — the spec explicitly GAPs
+  both (the recon form had zero responses).
+- `lib/answerDisplay.ts` is the one place that renders the polymorphic
+  answer `value`, mirroring `_answer_value()` in `routers/forms.py`.
+  It also parses backend timestamps as UTC: they're naive-UTC
+  (`datetime.utcnow`) serialized *without* a timezone suffix, and
+  feeding those to `new Date()` bare would silently shift every
+  displayed time by the viewer's UTC offset — caught while writing the
+  formatter, verified fixed (11:10 UTC seeds render 16:40 IST).
+
+Verified locally (23 automated Playwright checks against the real
+seeded forms plus a throwaway scratch form, deleted afterward with the
+form list confirmed restored): all four summary body types, partial
+answer counts ("3 of 5 answered" on the optional long_text), detail
+modal listing every question in form order, Escape-to-close, both empty
+states, a fresh public submission appearing with correct percentages,
+the deleted-option and deleted-question paths end to end, and no
+horizontal overflow at 375px. No app-code bugs surfaced during
+verification this phase; the two failures hit along the way were both
+test-harness races (a modal-content wait matching the table's
+"Submitted" column header behind the modal; screenshots firing inside
+the 175ms modal fade) — fixed in the scripts, not the app.
+
 ## Known gaps / deferred items
 
 - A few leftover `zinc-*` colors in sub-components and further
@@ -291,12 +348,15 @@ seeded forms' response counts were never touched.
   the builder, and the real interactive `WelcomeScreen` in the
   respondent flow reads directly from `form.welcome_title`/
   `welcome_description` (empty until a real editor exists to set them).
-- Results/responses dashboard (Phase 4) not started. The backend
-  endpoints (`GET /api/forms/{id}/responses`, `GET /api/forms/{id}/summary`)
-  already exist from Phase 1 and are unused by the frontend so far.
+- CSV export and partial-response/completion-rate tracking: both listed
+  under the brief's "Bonus (Optional)" section — deliberately not built
+  and not built-toward (the summary counter strip shows only counters
+  backed by data we actually record).
 
 ## What's next
 
-Phase 4 — results dashboard (per-question summary stats, individual
-response detail view) — same plan-then-approve checkpoint as Phases 2
-and 3 before implementation starts.
+All four core phases are built, deployed, and verified. Remaining:
+the tracked polish items above (leftover `zinc-*` colors, empty-state
+polish), the welcome-screen editor if it's ever pulled into scope, and
+final submission prep (repo/README review against the brief's
+deliverables checklist).

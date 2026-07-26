@@ -31,6 +31,8 @@ export function BuilderHeader() {
   if (!form) return null;
 
   const isSettingsTab = pathname?.endsWith("/settings") ?? false;
+  const isResultsTab = pathname?.endsWith("/results") ?? false;
+  const isBuildTab = !isSettingsTab && !isResultsTab;
   const isPublished = form.status === "published";
 
   async function handlePublishToggle() {
@@ -74,9 +76,15 @@ export function BuilderHeader() {
         <nav className="flex overflow-hidden rounded-md border border-ink-faint text-sm text-ink-muted">
           <Link
             href={`/forms/${formId}`}
-            className={`px-3 py-1.5 transition-colors duration-200 ease-tf ${!isSettingsTab ? "bg-ink text-white" : ""}`}
+            className={`px-3 py-1.5 transition-colors duration-200 ease-tf ${isBuildTab ? "bg-ink text-white" : ""}`}
           >
             Build
+          </Link>
+          <Link
+            href={`/forms/${formId}/results`}
+            className={`px-3 py-1.5 transition-colors duration-200 ease-tf ${isResultsTab ? "bg-ink text-white" : ""}`}
+          >
+            Results
           </Link>
           <Link
             href={`/forms/${formId}/settings`}
