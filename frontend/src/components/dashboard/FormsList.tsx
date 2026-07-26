@@ -13,9 +13,6 @@ export function FormsList() {
   const [forms, setForms] = useState<FormListItem[] | null>(null);
   const [error, setError] = useState(false);
   const [createOpen, setCreateOpen] = useState(false);
-  // Grid is the only view that actually renders differently - List is a
-  // plain visual toggle, matched to the real Typeform workspace header
-  // enough to read as a real workspace rather than a floating card grid.
   const [view, setView] = useState<"list" | "grid">("grid");
   const [sortOrder, setSortOrder] = useState<"newest" | "oldest">("newest");
   // Bumping this re-runs the effect below - lets duplicate/delete/retry
@@ -123,7 +120,7 @@ export function FormsList() {
             <Button onClick={() => setCreateOpen(true)}>Create your first form</Button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className={`grid grid-cols-1 gap-4 ${view === "grid" ? "sm:grid-cols-2" : ""}`}>
             {sortedForms.map((form) => (
               <FormCard key={form.id} form={form} onChanged={refetch} />
             ))}
