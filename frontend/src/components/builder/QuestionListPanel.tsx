@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
+import { MoveRight } from "lucide-react";
 import {
   DndContext,
   PointerSensor,
@@ -18,7 +20,7 @@ import { DeleteQuestionModal } from "./DeleteQuestionModal";
 import { QuestionListItem } from "./QuestionListItem";
 
 export function QuestionListPanel() {
-  const { form, selectedQuestionId, selectQuestion, addQuestion, reorderQuestion, reorderPending } =
+  const { form, formId, selectedQuestionId, selectQuestion, addQuestion, reorderQuestion, reorderPending } =
     useFormBuilder();
   const [deleteTarget, setDeleteTarget] = useState<number | null>(null);
 
@@ -45,31 +47,51 @@ export function QuestionListPanel() {
 
   return (
     <div
-      className={`flex h-full flex-col gap-2 overflow-y-auto border-r border-zinc-200 p-3 dark:border-zinc-800 ${
+      // No border - real Typeform separates this panel from the canvas by
+      // a background-color shift alone (surface-panel vs surface-canvas).
+      className={`flex h-full flex-col overflow-y-auto bg-surface-panel ${
         reorderPending ? "pointer-events-none opacity-70" : ""
       }`}
     >
-      {/* At most one reorder request is ever in flight. dnd-kit's
-          DndContext has its own internal effect keyed on the `sensors`
-          array, so swapping it to [] while pending (to "disable" drag)
-          changes that array's length between renders and violates
-          React's hook-order rule. pointer-events-none blocks the drag
-          gesture from ever starting instead, without touching sensors. */}
-      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-        <SortableContext items={questions.map((q) => q.id)} strategy={verticalListSortingStrategy}>
-          {questions.map((question) => (
-            <QuestionListItem
-              key={question.id}
-              question={question}
-              isSelected={question.id === selectedQuestionId}
-              onSelect={() => selectQuestion(question.id)}
-              onDeleteClick={() => setDeleteTarget(question.id)}
-            />
-          ))}
-        </SortableContext>
-      </DndContext>
+      <div className="flex flex-col gap-2 p-3 pb-5">
+        <h2 className="px-1 text-sm font-medium text-ink">Pages</h2>
+        {/* At most one reorder request is ever in flight. dnd-kit's
+            DndContext has its own internal effect keyed on the `sensors`
+            array, so swapping it to [] while pending (to "disable" drag)
+            changes that array's length between renders and violates
+            React's hook-order rule. pointer-events-none blocks the drag
+            gesture from ever starting instead, without touching sensors. */}
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+          <SortableContext items={questions.map((q) => q.id)} strategy={verticalListSortingStrategy}>
+            {questions.map((question) => (
+              <QuestionListItem
+                key={question.id}
+                question={question}
+                isSelected={question.id === selectedQuestionId}
+                onSelect={() => selectQuestion(question.id)}
+                onDeleteClick={() => setDeleteTarget(question.id)}
+              />
+            ))}
+          </SortableContext>
+        </DndContext>
 
-      <AddQuestionMenu onSelect={(type: QuestionType) => addQuestion(type)} />
+        <AddQuestionMenu onSelect={(type: QuestionType) => addQuestion(type)} />
+      </div>
+
+      <div className="flex flex-col gap-2 border-t border-ink-faint p-3 pt-4">
+        <h2 className="px-1 text-sm font-medium text-ink">Endings</h2>
+        {/* Real Typeform supports multiple ending screens; our schema only
+            has one thank-you screen (forms.thank_you_title/description),
+            so this links to the single Settings editor rather than
+            building a multi-ending list our data model doesn't support. */}
+        <Link
+          href={`/forms/${formId}/settings`}
+          className="flex items-center justify-between rounded-md px-2 py-2 text-sm text-ink-muted transition-colors duration-200 ease-tf hover:bg-surface-canvas hover:text-ink"
+        >
+          Thank you screen
+          <MoveRight className="h-3.5 w-3.5" />
+        </Link>
+      </div>
 
       <DeleteQuestionModal questionId={deleteTarget} onClose={() => setDeleteTarget(null)} />
     </div>

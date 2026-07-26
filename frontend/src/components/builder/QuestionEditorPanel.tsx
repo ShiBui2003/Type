@@ -12,7 +12,7 @@ export function QuestionEditorPanel() {
 
   if (!question) {
     return (
-      <div className="flex h-full flex-col items-center justify-center gap-2 p-6 text-center text-zinc-500">
+      <div className="flex h-full flex-col items-center justify-center gap-2 border-l border-ink-faint bg-surface-canvas p-6 text-center text-ink-muted">
         <p>No question selected.</p>
         <p className="text-sm">Add a question from the left panel to start editing.</p>
       </div>
@@ -41,25 +41,25 @@ export function QuestionEditorPanel() {
   }
 
   return (
-    <div className="flex h-full flex-col gap-4 overflow-y-auto p-6">
+    <div className="flex h-full flex-col gap-4 overflow-y-auto border-l border-ink-faint bg-surface-canvas p-6">
       <div>
-        <label className="mb-1 block text-xs font-medium text-zinc-500">Question</label>
+        <label className="mb-1 block text-xs font-medium text-ink-muted">Question</label>
         <input
           value={question.title}
           onChange={(e) => patchQuestion(question.id, { title: e.target.value })}
-          className="w-full border-b border-zinc-300 bg-transparent pb-1 text-lg font-medium outline-none transition-colors duration-200 ease-tf focus:border-ink dark:border-zinc-700"
+          className="w-full border-b border-ink-faint bg-transparent pb-1 text-lg font-normal text-ink outline-none transition-colors duration-200 ease-tf focus:border-ink"
         />
       </div>
 
       <div>
-        <label className="mb-1 block text-xs font-medium text-zinc-500">
+        <label className="mb-1 block text-xs font-medium text-ink-muted">
           Description (optional)
         </label>
         <textarea
           value={question.description ?? ""}
           onChange={(e) => patchQuestion(question.id, { description: e.target.value })}
           rows={2}
-          className="w-full resize-none rounded border border-zinc-300 px-2 py-1 text-sm dark:border-zinc-700 dark:bg-zinc-800"
+          className="w-full resize-none rounded border border-ink-faint px-2 py-1 text-sm text-ink"
         />
       </div>
 
@@ -87,7 +87,7 @@ export function QuestionEditorPanel() {
 
       {meta.hasOptions && (
         <div>
-          <label className="mb-1 block text-xs font-medium text-zinc-500">Options</label>
+          <label className="mb-1 block text-xs font-medium text-ink-muted">Options</label>
           <OptionsEditor
             question={question}
             onChange={(options: OptionIn[]) => patchQuestion(question.id, { options })}
@@ -97,7 +97,7 @@ export function QuestionEditorPanel() {
 
       {meta.hasSettings && (
         <div>
-          <label className="mb-1 block text-xs font-medium text-zinc-500">Settings</label>
+          <label className="mb-1 block text-xs font-medium text-ink-muted">Settings</label>
           <QuestionSettingsFields
             question={question}
             onChange={(settings) => patchQuestion(question.id, { settings_json: settings })}

@@ -46,27 +46,27 @@ export function FormCard({ form, onChanged }: { form: FormListItem; onChanged: (
   }
 
   return (
-    <div className="flex flex-col gap-2 rounded-md border border-zinc-200 p-4 dark:border-zinc-800">
+    <div className="flex flex-col gap-2 rounded-md bg-surface-canvas p-4">
       <div className="flex items-start justify-between gap-2">
         <input
           value={title}
           onChange={(e) => handleTitleChange(e.target.value)}
           aria-label="Form title"
-          className="min-w-0 flex-1 border-none bg-transparent font-medium outline-none"
+          className="min-w-0 flex-1 border-none bg-transparent font-normal text-ink outline-none"
         />
         <div className="relative shrink-0">
           <button
             onClick={() => setMenuOpen((o) => !o)}
             aria-label="Form actions"
-            className="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200"
+            className="text-ink-muted hover:text-ink"
           >
             <MoreVertical className="h-4 w-4" />
           </button>
           {menuOpen && (
-            <div className="absolute right-0 z-10 mt-1 w-40 rounded-md bg-surface-panel py-1 text-sm shadow-ring dark:bg-zinc-900">
+            <div className="absolute right-0 z-10 mt-1 w-40 rounded-md bg-surface-panel py-1 text-sm shadow-ring">
               <button
                 onClick={handleDuplicate}
-                className="flex w-full items-center gap-2 px-3 py-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                className="flex w-full items-center gap-2 px-3 py-1.5 text-ink hover:bg-surface-canvas"
               >
                 <Copy className="h-3.5 w-3.5" /> Duplicate
               </button>
@@ -75,7 +75,7 @@ export function FormCard({ form, onChanged }: { form: FormListItem; onChanged: (
                   setDeleteOpen(true);
                   setMenuOpen(false);
                 }}
-                className="flex w-full items-center gap-2 px-3 py-1.5 text-red-600 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                className="flex w-full items-center gap-2 px-3 py-1.5 text-red-600 hover:bg-surface-canvas"
               >
                 <Trash2 className="h-3.5 w-3.5" /> Delete
               </button>
@@ -88,13 +88,13 @@ export function FormCard({ form, onChanged }: { form: FormListItem; onChanged: (
         <span
           className={`rounded-full px-2 py-0.5 ${
             form.status === "published"
-              ? "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-400"
-              : "bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400"
+              ? "bg-green-100 text-green-700"
+              : "bg-surface-panel text-ink-muted"
           }`}
         >
           {form.status === "published" ? "Published" : "Draft"}
         </span>
-        <span className="text-zinc-400">
+        <span className="text-ink-muted">
           {form.response_count} response{form.response_count === 1 ? "" : "s"}
         </span>
       </div>
@@ -104,7 +104,7 @@ export function FormCard({ form, onChanged }: { form: FormListItem; onChanged: (
           Open builder
         </Link>
         {form.status === "published" && form.slug && (
-          <button onClick={() => setShareOpen(true)} className="text-zinc-500 hover:underline">
+          <button onClick={() => setShareOpen(true)} className="text-ink-muted hover:underline">
             Share link
           </button>
         )}

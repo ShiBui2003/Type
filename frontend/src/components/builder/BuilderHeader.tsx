@@ -53,24 +53,24 @@ export function BuilderHeader() {
   }
 
   return (
-    <header className="flex flex-col gap-3 border-b border-zinc-200 px-4 py-3 sm:flex-row sm:items-center sm:justify-between dark:border-zinc-800">
+    <header className="flex flex-col gap-3 border-b border-ink-faint bg-surface-canvas px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex min-w-0 items-center gap-3">
-        <Link href="/" className="shrink-0 text-sm text-zinc-500 hover:underline">
+        <Link href="/" className="shrink-0 text-sm text-ink-muted hover:underline">
           ← All forms
         </Link>
         <input
           value={form.title}
           onChange={(e) => patchForm({ title: e.target.value })}
           aria-label="Form title"
-          className="min-w-0 flex-1 border-none bg-transparent text-lg font-semibold outline-none"
+          className="min-w-0 flex-1 border-none bg-transparent text-lg font-normal text-ink outline-none"
         />
-        <span className="shrink-0 text-xs text-zinc-400" aria-live="polite">
+        <span className="shrink-0 text-xs text-ink-muted" aria-live="polite">
           {SAVE_LABEL[saveStatus]}
         </span>
       </div>
 
       <div className="flex shrink-0 items-center gap-2">
-        <nav className="flex overflow-hidden rounded-md border border-zinc-200 text-sm dark:border-zinc-700">
+        <nav className="flex overflow-hidden rounded-md border border-ink-faint text-sm text-ink-muted">
           <Link
             href={`/forms/${formId}`}
             className={`px-3 py-1.5 transition-colors duration-200 ease-tf ${!isSettingsTab ? "bg-ink text-white" : ""}`}

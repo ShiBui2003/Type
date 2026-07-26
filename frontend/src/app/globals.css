@@ -1,8 +1,19 @@
 @import "tailwindcss";
 
+/* The measured design spec (docs/typeform-design-spec.md) is captured
+   entirely from Typeform's light-only admin UI - there's no dark variant
+   to match, and this app has no dark-mode toggle feature. Making the
+   `dark:` variant class-based (opt-in via a .dark ancestor) rather than
+   Tailwind's default media-query-based one means it stops responding to
+   the visitor's OS/browser color-scheme preference; since nothing ever
+   adds a .dark class, every `dark:` utility already in the codebase
+   becomes permanently inert instead of needing to be hunted down and
+   deleted file by file. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: var(--tf-surface-page);
+  --foreground: var(--tf-ink);
 
   /* Design tokens measured from the real Typeform admin UI - see
      docs/typeform-design-spec.md. Applied to our own builder/dashboard
@@ -83,13 +94,6 @@
   --text-base: var(--tf-fs-base);
   --text-lg: var(--tf-fs-lg);
   --text-xl: var(--tf-fs-xl);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
