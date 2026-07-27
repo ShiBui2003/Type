@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { Monitor, Palette, Settings2, Smartphone, X } from "lucide-react";
+import { Eye, Monitor, Palette, Settings2, Smartphone, X } from "lucide-react";
 
 import { useFormBuilder } from "@/context/FormBuilderContext";
 import { ThemePicker } from "@/components/settings/ThemePicker";
@@ -15,13 +15,12 @@ import { AddQuestionMenu } from "./AddQuestionMenu";
 // trigger needed no new logic); the device toggle resizes the preview
 // canvas; Settings links to the Settings route.
 //
-// A full-screen Preview button used to sit here as an inert placeholder
-// and was removed rather than left dead: the brief's "live preview of the
-// form" is already satisfied by the always-visible canvas that updates
-// per keystroke, and a true full preview of an *unpublished* form would
-// need a new backend endpoint (the public one is slug-based and
-// published-only). Published forms are already previewable end to end via
-// the share link.
+// Preview opens the *actual* respondent experience at /f/{slug} in a new
+// tab rather than a mock. That only exists once a form is published (the
+// public API is slug-based and published-only), so on a draft the control
+// is rendered disabled with an explanatory tooltip instead of appearing
+// and disappearing as the status changes - a control that vanishes is
+// harder to understand than one that explains why it's unavailable.
 export function BuilderToolbar({
   device,
   onDeviceChange,
@@ -29,8 +28,9 @@ export function BuilderToolbar({
   device: PreviewDevice;
   onDeviceChange: (device: PreviewDevice) => void;
 }) {
-  const { addQuestion, formId } = useFormBuilder();
+  const { addQuestion, formId, form } = useFormBuilder();
   const isMobile = device === "mobile";
+  const previewSlug = form?.status === "published" ? form.slug : null;
 
   return (
     <div className="flex items-center gap-1 border-b border-ink-faint bg-surface-canvas px-4 py-2">
@@ -45,6 +45,28 @@ export function BuilderToolbar({
       >
         {isMobile ? <Smartphone className="h-4 w-4" /> : <Monitor className="h-4 w-4" />}
       </button>
+      {previewSlug ? (
+        <a
+          href={`/f/${previewSlug}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Preview form"
+          title="Preview the published form in a new tab"
+          className="flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-sm text-ink-muted transition-colors duration-200 ease-tf hover:bg-surface-panel hover:text-ink"
+        >
+          <Eye className="h-4 w-4" />
+        </a>
+      ) : (
+        <button
+          type="button"
+          disabled
+          aria-label="Preview form"
+          title="Publish this form to preview it"
+          className="flex cursor-not-allowed items-center gap-1.5 rounded-md px-2.5 py-1.5 text-sm text-ink-muted opacity-40"
+        >
+          <Eye className="h-4 w-4" />
+        </button>
+      )}
       <div className="flex-1" />
       <Link
         href={`/forms/${formId}/settings`}
