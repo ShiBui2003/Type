@@ -77,13 +77,19 @@ function WelcomeScreenEditor() {
         ariaLabel="Welcome screen description"
         className="mt-2 text-center text-sm opacity-70"
       />
-      <button
-        type="button"
-        className="mx-auto mt-6 block rounded-full px-6 py-2 text-sm font-medium"
+      {/* A mockup of the respondent's Start button, not a control - the
+          question inputs around it are `disabled` for the same reason.
+          Rendered as a div so there's nothing clickable or focusable
+          here: a <button> with no handler looks interactive and isn't.
+          `w-fit` + `text-center` reproduce the intrinsic sizing and text
+          centering a <button> gets for free, so it renders identically. */}
+      <div
+        aria-hidden="true"
+        className="mx-auto mt-6 block w-fit rounded-full px-6 py-2 text-center text-sm font-medium"
         style={{ background: "var(--form-fg)", color: "var(--form-bg)" }}
       >
         Start
-      </button>
+      </div>
       <p className="mt-3 flex items-center justify-center gap-1 text-xs opacity-60">
         <Clock className="h-3 w-3" />
         {/* Rough client-side estimate for display only, not stored data. */}
