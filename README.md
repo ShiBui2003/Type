@@ -135,6 +135,7 @@ Six tables: `users`, `forms`, `questions`, `question_options`,
 | `POST /api/forms/{id}/questions` | Create a question (+ options) |
 | `PATCH /api/forms/{id}/questions/reorder` | Reorder: `{question_id, after_id, before_id}` |
 | `GET /api/forms/{id}/responses` | List responses submitted to a form |
+| `GET /api/forms/{id}/responses/export` | Stream all responses as a CSV download |
 | `GET /api/forms/{id}/summary` | Aggregate per-question stats |
 | `PATCH /api/questions/{id}` | Update a question (+ sync its options) |
 | `DELETE /api/questions/{id}` | Soft-delete a question |
@@ -202,6 +203,32 @@ Six tables: `users`, `forms`, `questions`, `question_options`,
   questions keep their historical answers (see the schema notes above),
   so the Results view still shows their stats and answers, badged
   "Removed question" rather than silently dropped.
+
+## Bonus features
+
+- **CSV export** (from the brief's Bonus list) — implemented.
+  `GET /api/forms/{id}/responses/export` streams one row per response and
+  one column per question, using question titles as headers in
+  form-question order. It reuses the same rules the Results detail view
+  applies: live questions in position order followed by any soft-deleted
+  question that still holds answers (labelled `(removed)`), unanswered
+  questions as empty cells, and an answer whose option was later deleted
+  as `(option removed)` rather than a meaningless historical id. Rows are
+  oldest-first so row *n* lines up with `#n` in the responses table.
+  Reachable from two places — the Results view and the dashboard card's
+  "…" menu — both calling one shared implementation so they can't drift.
+- **Custom themes** — partially: four preset colour themes rather than a
+  free-form colour/font picker.
+- **Dark mode — deliberately not attempted.** It would mean reworking the
+  same colour-token system that already produced a real bug in this
+  project: Tailwind's default `dark:` variant is media-query-based, so
+  the app was silently rendering dark whenever the OS preference was set,
+  against a design spec measured entirely from Typeform's light-only
+  admin UI. That was fixed by making the variant class-based and opt-in.
+  Re-opening it for a non-required feature wasn't a good trade.
+- Logic jumps, file-upload questions, and partial-response/completion-rate
+  tracking are not implemented; the Results counter strip deliberately
+  shows only figures backed by data we actually record.
 
 For the full phase-by-phase build history, the real bugs found and fixed
 along the way, the visual design system, and the list of deliberately

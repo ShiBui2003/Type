@@ -469,10 +469,19 @@ been observed.
   state was scoped out deliberately — it would mean running
   `RespondentFlowContext` against a second data source, and that file has
   produced three of the four real bugs in this project.
-- CSV export and partial-response/completion-rate tracking: both listed
-  under the brief's "Bonus (Optional)" section — deliberately not built
-  and not built-toward (the summary counter strip shows only counters
-  backed by data we actually record).
+- ~~CSV export~~ — **built** as a bonus feature, after the core work was
+  done and verified. `GET /api/forms/{id}/responses/export` streams the
+  CSV; the Results view and the dashboard card menu are two entry points
+  onto one shared implementation. It reuses the Results detail view's
+  rules for column order, soft-deleted questions and deleted options, so
+  the export reads the same as the UI.
+- Partial-response/completion-rate tracking: listed under the brief's
+  "Bonus (Optional)" section — deliberately not built and not
+  built-toward (the summary counter strip shows only counters backed by
+  data we actually record). Dark mode was also skipped on purpose: it
+  would reopen the colour-token system that caused the media-query
+  `dark:` bug in Phase 2, which isn't a good trade for a non-required
+  feature.
 - Three UI-polish items found in the final recon pass, deferred not
   dropped: **character counters** on the title/description fields (real
   Typeform shows them), the **respondent nav chevrons sitting bottom-left**

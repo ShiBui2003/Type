@@ -1,7 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Download } from "lucide-react";
 
+import { Button } from "@/components/ui/Button";
+import { useExportCsv } from "@/lib/exportCsv";
 import { EmptyResponses } from "@/components/results/EmptyResponses";
 import { ResponseDetailModal } from "@/components/results/ResponseDetailModal";
 import { ResponsesTable } from "@/components/results/ResponsesTable";
@@ -18,6 +21,7 @@ import type { FormSummary, ResponseDetail } from "@/lib/types";
 // question order for the detail modal and deleted-question detection.
 export default function ResultsPage() {
   const { form, formId } = useFormBuilder();
+  const { exportCsv, exporting } = useExportCsv();
   const [summary, setSummary] = useState<FormSummary | null>(null);
   const [responses, setResponses] = useState<ResponseDetail[] | null>(null);
   const [error, setError] = useState(false);
@@ -67,7 +71,19 @@ export default function ResultsPage() {
   return (
     <div className="h-full overflow-y-auto">
       <div className="mx-auto flex max-w-3xl flex-col gap-4 p-6">
-        <ResultsTabs tab={tab} onChange={setTab} responseCount={summary.response_count} />
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <ResultsTabs tab={tab} onChange={setTab} responseCount={summary.response_count} />
+          {/* Sits on the tab row so it's visible from both sub-tabs
+              rather than only alongside the table. */}
+          <Button
+            onClick={() => exportCsv(formId, form.title)}
+            disabled={exporting}
+            className="flex items-center gap-1.5"
+          >
+            <Download className="h-4 w-4" />
+            {exporting ? "Exporting…" : "Export CSV"}
+          </Button>
+        </div>
 
         {tab === "summary" ? (
           <>

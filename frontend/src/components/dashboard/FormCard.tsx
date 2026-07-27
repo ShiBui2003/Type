@@ -2,11 +2,12 @@
 
 import { useRef, useState } from "react";
 import Link from "next/link";
-import { Copy, MoreVertical, Trash2 } from "lucide-react";
+import { Copy, Download, MoreVertical, Trash2 } from "lucide-react";
 
 import { ShareLinkModal } from "@/components/ui/ShareLinkModal";
 import { useToast } from "@/components/ui/ToastProvider";
 import * as formsApi from "@/lib/api/forms";
+import { useExportCsv } from "@/lib/exportCsv";
 import { createKeyedDebouncer } from "@/lib/debounce";
 import type { FormListItem } from "@/lib/types";
 import { DeleteFormModal } from "./DeleteFormModal";
@@ -15,6 +16,7 @@ const AUTOSAVE_DELAY_MS = 800;
 
 export function FormCard({ form, onChanged }: { form: FormListItem; onChanged: () => void }) {
   const { showToast } = useToast();
+  const { exportCsv, exporting } = useExportCsv();
   const [title, setTitle] = useState(form.title);
   const [menuOpen, setMenuOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
@@ -69,6 +71,19 @@ export function FormCard({ form, onChanged }: { form: FormListItem; onChanged: (
                 className="flex w-full items-center gap-2 px-3 py-1.5 text-ink hover:bg-surface-canvas"
               >
                 <Copy className="h-3.5 w-3.5" /> Duplicate
+              </button>
+              {/* Same useExportCsv hook the Results view uses - one
+                  implementation, a second entry point, so exporting from
+                  here can't drift from exporting from there. */}
+              <button
+                onClick={() => {
+                  setMenuOpen(false);
+                  exportCsv(form.id, form.title);
+                }}
+                disabled={exporting}
+                className="flex w-full items-center gap-2 px-3 py-1.5 text-ink hover:bg-surface-canvas disabled:opacity-50"
+              >
+                <Download className="h-3.5 w-3.5" /> Export CSV
               </button>
               <button
                 onClick={() => {

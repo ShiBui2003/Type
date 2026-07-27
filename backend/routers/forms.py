@@ -1,7 +1,11 @@
+import csv
+import io
+import re
 from datetime import datetime
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import StreamingResponse
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
@@ -428,6 +432,99 @@ def get_response(response_id: int, db: Session = Depends(get_db)):
     if response is None:
         raise HTTPException(status_code=404, detail="Response not found")
     return _response_to_out(response)
+
+
+def _csv_cell(question: Question, answer: Answer | None) -> str:
+    """One CSV cell. Mirrors formatAnswerValue() in the frontend so the
+    export reads the same as the Results table and detail view."""
+    if answer is None:
+        return ""  # question existed but this respondent didn't answer it
+
+    if question.type in (QuestionType.MULTIPLE_CHOICE, QuestionType.DROPDOWN):
+        # The chosen option may have been deleted from the builder since:
+        # value_option_id is nulled and only value_json's historical id
+        # survives, which is meaningless to a reader.
+        if answer.value_option_id is not None and answer.selected_option is not None:
+            return answer.selected_option.label
+        return "(option removed)"
+
+    if answer.value_number is not None:
+        number = answer.value_number
+        return str(int(number)) if float(number).is_integer() else str(number)
+    if answer.value_text is not None:
+        return answer.value_text
+    return "" if answer.value_json is None else str(answer.value_json)
+
+
+@router.get("/forms/{form_id}/responses/export")
+def export_responses_csv(form_id: int, db: Session = Depends(get_db)):
+    """All responses for a form as a downloadable CSV.
+
+    Column order matches the Results detail view: live questions in
+    position order, then any soft-deleted question that still has
+    answers, appended and labelled. Rows are oldest-first so the row
+    numbers line up with the "#N" column in the responses table (which
+    numbers the oldest submission #1).
+    """
+    form = get_form_or_404(db, form_id)
+
+    live = (
+        db.query(Question)
+        .filter(Question.form_id == form_id, Question.deleted_at.is_(None))
+        .order_by(Question.position)
+        .all()
+    )
+    removed = (
+        db.query(Question)
+        .filter(Question.form_id == form_id, Question.deleted_at.isnot(None))
+        .order_by(Question.position)
+        .all()
+    )
+    # A removed question only earns a column if it actually holds data -
+    # otherwise every export would carry columns for questions nobody
+    # ever answered.
+    removed = [q for q in removed if db.query(Answer).filter(Answer.question_id == q.id).count()]
+    columns = live + removed
+
+    responses = (
+        db.query(Response)
+        .filter(Response.form_id == form_id)
+        .order_by(Response.started_at.asc())
+        .all()
+    )
+
+    def rows():
+        buffer = io.StringIO()
+        writer = csv.writer(buffer)
+
+        def flush() -> str:
+            value = buffer.getvalue()
+            buffer.seek(0)
+            buffer.truncate(0)
+            return value
+
+        header = ["#", "Submitted"] + [
+            f"{q.title} (removed)" if q.deleted_at is not None else q.title for q in columns
+        ]
+        writer.writerow(header)
+        yield flush()
+
+        for index, response in enumerate(responses, start=1):
+            by_question = {a.question_id: a for a in response.answers}
+            submitted = response.submitted_at or response.started_at
+            writer.writerow(
+                [index, submitted.isoformat(timespec="seconds") if submitted else ""]
+                + [_csv_cell(q, by_question.get(q.id)) for q in columns]
+            )
+            yield flush()
+
+    safe_title = re.sub(r"[^A-Za-z0-9]+", "-", form.title).strip("-").lower() or "form"
+    filename = f"{safe_title}-responses.csv"
+    return StreamingResponse(
+        rows(),
+        media_type="text/csv; charset=utf-8",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
 
 
 @router.get("/forms/{form_id}/summary", response_model=FormSummaryOut)
