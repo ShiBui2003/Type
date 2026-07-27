@@ -89,17 +89,19 @@ export function FormCard({ form, onChanged }: { form: FormListItem; onChanged: (
             never used this app (the brief asks the list to show
             draft/published). Draft's is deliberately muted - neutral
             surface, no color - so Published stays the only thing that
-            draws the eye, which is how real Typeform weights it. */}
+            draws the eye, which is how real Typeform weights it.
+            The count shows on both: a draft can hold a real historical
+            count (published -> collected responses -> unpublished), and
+            hiding it there would lose information the brief asks the
+            list to show. */}
         {form.status === "published" ? (
-          <>
-            <span className="rounded-full bg-green-100 px-2 py-0.5 text-green-700">Published</span>
-            <span className="text-ink-muted">
-              {form.response_count} response{form.response_count === 1 ? "" : "s"}
-            </span>
-          </>
+          <span className="rounded-full bg-green-100 px-2 py-0.5 text-green-700">Published</span>
         ) : (
           <span className="rounded-full bg-surface-panel px-2 py-0.5 text-ink-muted">Draft</span>
         )}
+        <span className="text-ink-muted">
+          {form.response_count} response{form.response_count === 1 ? "" : "s"}
+        </span>
       </div>
 
       <div className="flex items-center gap-3 text-sm">

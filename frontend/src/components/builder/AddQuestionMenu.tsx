@@ -3,9 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Plus } from "lucide-react";
 
-import { QUESTION_TYPES } from "@/lib/constants";
-import { QuestionTypeIcon } from "@/components/ui/QuestionTypeIcon";
-import type { QuestionType } from "@/lib/types";
+import { QUESTION_PICKER_ENTRIES, type QuestionPickerEntry } from "@/lib/constants";
 
 // Exactly the 8 types from the brief - Yes/No is not a 9th tile here,
 // it's a toggle on multiple_choice questions in QuestionEditorPanel.
@@ -19,7 +17,7 @@ export function AddQuestionMenu({
   onSelect,
   variant = "full",
 }: {
-  onSelect: (type: QuestionType) => void;
+  onSelect: (entry: QuestionPickerEntry) => void;
   variant?: "full" | "icon";
 }) {
   const [open, setOpen] = useState(false);
@@ -57,17 +55,19 @@ export function AddQuestionMenu({
       )}
       {open && (
         <div className="absolute left-0 z-10 mt-2 grid w-64 grid-cols-2 gap-1 rounded-md bg-surface-panel p-2 shadow-ring">
-          {QUESTION_TYPES.map((meta) => (
+          {QUESTION_PICKER_ENTRIES.map((entry) => (
             <button
-              key={meta.type}
+              key={entry.key}
               onClick={() => {
-                onSelect(meta.type);
+                onSelect(entry);
                 setOpen(false);
               }}
               className="flex flex-col items-center gap-1 rounded p-2 text-xs text-ink transition-colors duration-200 ease-tf hover:bg-surface-canvas"
             >
-              <QuestionTypeIcon type={meta.type} className="h-5 w-5" />
-              {meta.label}
+              {/* entry.icon rather than QuestionTypeIcon: Yes/No shares
+                  multiple_choice's type but needs its own icon here. */}
+              <entry.icon className="h-5 w-5" aria-hidden="true" />
+              {entry.label}
             </button>
           ))}
         </div>

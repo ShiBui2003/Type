@@ -6,7 +6,6 @@ import { Eye, Monitor, Palette, Settings2, Smartphone, X } from "lucide-react";
 
 import { useFormBuilder } from "@/context/FormBuilderContext";
 import { ThemePicker } from "@/components/settings/ThemePicker";
-import type { QuestionType } from "@/lib/types";
 import type { PreviewDevice } from "./LivePreviewPanel";
 import { AddQuestionMenu } from "./AddQuestionMenu";
 
@@ -34,7 +33,10 @@ export function BuilderToolbar({
 
   return (
     <div className="flex items-center gap-1 border-b border-ink-faint bg-surface-canvas px-4 py-2">
-      <AddQuestionMenu variant="icon" onSelect={(type: QuestionType) => addQuestion(type)} />
+      <AddQuestionMenu
+        variant="icon"
+        onSelect={(entry) => addQuestion(entry.type, entry.variant)}
+      />
       <DesignPopover />
       <button
         onClick={() => onDeviceChange(isMobile ? "desktop" : "mobile")}

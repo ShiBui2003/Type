@@ -145,7 +145,7 @@ interface FormBuilderContextValue extends State {
   formId: number;
   patchForm: (patch: Partial<Form>) => void;
   patchQuestion: (id: number, patch: QuestionPatch) => void;
-  addQuestion: (type: QuestionType) => Promise<void>;
+  addQuestion: (type: QuestionType, variant?: "yes_no") => Promise<void>;
   deleteQuestion: (id: number) => Promise<void>;
   reorderQuestion: (
     newOrder: Question[],
@@ -256,13 +256,22 @@ export function FormBuilderProvider({
   );
 
   const addQuestion = useCallback(
-    async (type: QuestionType) => {
+    async (type: QuestionType, variant?: "yes_no") => {
       const meta = QUESTION_TYPE_MAP[type];
+      // The Yes/No picker tile creates exactly what the "Yes/No question"
+      // toggle in the editor panel produces - same variant flag, same two
+      // locked options - so both routes yield identical question data.
+      const isYesNo = variant === "yes_no";
       const payload: QuestionCreate = {
         type,
-        title: meta.defaultTitle,
+        title: isYesNo ? "Yes/No question" : meta.defaultTitle,
         is_required: false,
-        options: meta.hasOptions ? [{ label: "Option 1" }, { label: "Option 2" }] : undefined,
+        settings_json: isYesNo ? { variant: "yes_no" } : undefined,
+        options: isYesNo
+          ? [{ label: "Yes" }, { label: "No" }]
+          : meta.hasOptions
+            ? [{ label: "Option 1" }, { label: "Option 2" }]
+            : undefined,
       };
       try {
         const question = await questionsApi.createQuestion(formId, payload);

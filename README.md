@@ -145,11 +145,21 @@ Six tables: `users`, `forms`, `questions`, `question_options`,
 ## Assumptions & scope
 
 - **Yes/No is a `multiple_choice` variant, not a 9th question type.**
-  Toggling "Yes/No question" in the builder sets
+  Flipping the "Yes/No question" switch in the builder sets
   `settings_json.variant = "yes_no"` on a regular `multiple_choice`
   question and locks its options to exactly Yes/No — same schema,
   same respondent-flow component, one less type to special-case
-  end-to-end.
+  end-to-end. It still gets its own **"Yes/No" tile in the type picker**
+  so the brief's eight named types are all directly selectable — the
+  tile just creates a `multiple_choice` with the variant flag and the
+  two options pre-set, producing question data identical to adding a
+  Multiple choice and flipping the switch.
+- **"Required" and "Yes/No question" are toggle switches, not
+  checkboxes.** Both render the same `Toggle` component, built to the
+  measured spec (28×16 track, `#655D67` on-state, 10×10 knob) — the
+  brief names this control a "required toggle", and a default checkbox
+  is one of the clearest tells that a settings panel is generic rather
+  than Typeform-like.
 - **Titles are edited in place on the preview canvas**, not in the
   right-hand panel — clicking the welcome-screen heading or a question
   heading in the preview puts a cursor there and you type the real
@@ -174,6 +184,14 @@ Six tables: `users`, `forms`, `questions`, `question_options`,
   at the far right of the line and read as a layout bug. Required is
   signalled instead by the red dot in the Pages list and the Required
   toggle in the panel.
+- **"Preview" opens the real published form, not a mock.** The toolbar's
+  eye icon links to `/f/{slug}` in a new tab. The public API is
+  slug-based and published-only, so it can't open a draft — on a draft
+  the control renders disabled with a "Publish this form to preview it"
+  tooltip rather than disappearing, since a control that explains itself
+  beats one that vanishes. Drafts are still previewable through the
+  always-visible canvas, which is what satisfies the brief's "live
+  preview of the form" and updates per keystroke.
 - **Free-text answers are sampled, not aggregated.** The per-question
   summary shows option counts for choice questions and average +
   distribution for number/rating, but short/long text, email, and date

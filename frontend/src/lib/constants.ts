@@ -7,6 +7,7 @@ import {
   Mail,
   Star,
   TextCursorInput,
+  ToggleLeft,
   type LucideIcon,
 } from "lucide-react";
 
@@ -98,6 +99,40 @@ export const QUESTION_TYPE_MAP: Record<QuestionType, QuestionTypeMeta> =
     QuestionType,
     QuestionTypeMeta
   >;
+
+// What the "Add question" picker lists. Separate from QUESTION_TYPES
+// because a tile is not always a distinct question type: Yes/No is a
+// multiple_choice with settings_json.variant = "yes_no" (see the README
+// assumptions), so it needs its own tile without becoming its own type
+// in the schema. Everything downstream - the editor panel, the preview,
+// the respondent flow - still sees a plain multiple_choice.
+export interface QuestionPickerEntry {
+  key: string;
+  label: string;
+  icon: LucideIcon;
+  type: QuestionType;
+  variant?: "yes_no";
+}
+
+const YES_NO_ENTRY: QuestionPickerEntry = {
+  key: "yes_no",
+  label: "Yes/No",
+  icon: ToggleLeft,
+  type: "multiple_choice",
+  variant: "yes_no",
+};
+
+// Order: the eight brief-named types, with Yes/No sitting next to the
+// other choice-style types rather than at the end.
+export const QUESTION_PICKER_ENTRIES: QuestionPickerEntry[] = QUESTION_TYPES.flatMap((meta) => {
+  const entry: QuestionPickerEntry = {
+    key: meta.type,
+    label: meta.label,
+    icon: meta.icon,
+    type: meta.type,
+  };
+  return meta.type === "dropdown" ? [entry, YES_NO_ENTRY] : [entry];
+});
 
 // Preset color themes - our own scoping call, not something the
 // assignment text mandates specifically (it just says "theme" under

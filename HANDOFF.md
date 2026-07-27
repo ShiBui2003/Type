@@ -457,13 +457,18 @@ been observed.
   (`welcome_title`/`welcome_description` in the schema, the PATCH
   endpoint, and the respondent `WelcomeScreen`), so only the editor was
   missing.
-- Three toolbar controls were inert placeholders and were dealt with
-  rather than left looking clickable: the full-screen Preview button was
-  **removed** (the brief's "live preview" is already met by the
-  always-visible canvas, and previewing an *unpublished* form would need
-  a new backend endpoint — the public one is slug-based and
-  published-only), while the device toggle and Settings icon were
-  **wired up** for real.
+- Three toolbar controls were inert placeholders and were all dealt with
+  rather than left looking clickable. The device toggle and Settings icon
+  were **wired up** for real. Preview was first **removed** — the brief's
+  "live preview" is already met by the always-visible canvas — and then
+  **re-added as a real control**: it opens `/f/{slug}` in a new tab, the
+  actual respondent experience rather than a mock. The public API is
+  slug-based and published-only so it can't open a draft; on a draft it
+  renders disabled with a "Publish this form to preview it" tooltip
+  instead of vanishing. A full-screen preview driven by unsaved builder
+  state was scoped out deliberately — it would mean running
+  `RespondentFlowContext` against a second data source, and that file has
+  produced three of the four real bugs in this project.
 - CSV export and partial-response/completion-rate tracking: both listed
   under the brief's "Bonus (Optional)" section — deliberately not built
   and not built-toward (the summary counter strip shows only counters
@@ -492,7 +497,8 @@ been observed.
 All four core phases are built, deployed, and verified, and the final
 UI/UX closeout pass is done: inline canvas editing for both the welcome
 screen and question titles, toggle switches replacing checkboxes, the
-full design-token sweep, a Draft status pill, and every inert toolbar
-control either wired up or removed. What remains is the short
+full design-token sweep, a Draft status pill, a skeleton loading state
+on the dashboard, and every toolbar control now doing something real.
+What remains is the short
 deferred-polish list above — none of it blocking, all of it tracked
 with reasoning rather than silently dropped.

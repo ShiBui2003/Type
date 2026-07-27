@@ -14,7 +14,6 @@ import {
 import { SortableContext, arrayMove, verticalListSortingStrategy } from "@dnd-kit/sortable";
 
 import { useFormBuilder } from "@/context/FormBuilderContext";
-import type { QuestionType } from "@/lib/types";
 import { AddQuestionMenu } from "./AddQuestionMenu";
 import { DeleteQuestionModal } from "./DeleteQuestionModal";
 import { QuestionListItem } from "./QuestionListItem";
@@ -88,7 +87,7 @@ export function QuestionListPanel() {
           </SortableContext>
         </DndContext>
 
-        <AddQuestionMenu onSelect={(type: QuestionType) => addQuestion(type)} />
+        <AddQuestionMenu onSelect={(entry) => addQuestion(entry.type, entry.variant)} />
       </div>
 
       <div className="flex flex-col gap-2 border-t border-ink-faint p-3 pt-4">
