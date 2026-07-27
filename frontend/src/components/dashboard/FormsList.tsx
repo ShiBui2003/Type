@@ -8,6 +8,7 @@ import * as formsApi from "@/lib/api/forms";
 import type { FormListItem } from "@/lib/types";
 import { CreateFormModal } from "./CreateFormModal";
 import { FormCard } from "./FormCard";
+import { FormsListSkeleton } from "./FormsListSkeleton";
 
 export function FormsList() {
   const [forms, setForms] = useState<FormListItem[] | null>(null);
@@ -51,7 +52,7 @@ export function FormsList() {
   }
 
   if (forms === null) {
-    return <div className="min-h-screen bg-surface-page p-6 text-ink-muted">Loading forms…</div>;
+    return <FormsListSkeleton />;
   }
 
   const sortedForms = [...forms].sort((a, b) => {
