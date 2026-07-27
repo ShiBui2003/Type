@@ -469,6 +469,22 @@ been observed.
   state was scoped out deliberately — it would mean running
   `RespondentFlowContext` against a second data source, and that file has
   produced three of the four real bugs in this project.
+- ~~Controls that looked interactive but weren't~~ — **closed, and worth
+  describing as a pattern rather than six separate bugs.** Six controls
+  had been built visually and never wired: the dashboard grid/list
+  toggle, the builder's device-preview switch, the Preview (eye) icon,
+  the toolbar Settings icon, the share modal's QR icon, and the Start
+  button in the welcome preview. Each was resolved one way or the other,
+  never left half-done: grid/list, device, Settings and Preview were
+  **wired up**; QR was **removed** (a real one needs a QR library, and a
+  new dependency for one decorative icon isn't a good trade); Start
+  became a **non-interactive div**, since it was never a control at all
+  but a mockup sitting beside inputs that are already `disabled`.
+  Finding the fifth one late showed why a DOM probe wasn't enough — it
+  only sees what's currently rendered, so a control inside a closed modal
+  is invisible to it. A comment-aware static sweep of all 50 `.tsx` files
+  now reports zero unwired `<button>`/`<a>` elements, checked against a
+  deliberately planted fake to confirm the scanner still detects one.
 - ~~CSV export~~ — **built** as a bonus feature, after the core work was
   done and verified. `GET /api/forms/{id}/responses/export` streams the
   CSV; the Results view and the dashboard card menu are two entry points
@@ -507,7 +523,9 @@ All four core phases are built, deployed, and verified, and the final
 UI/UX closeout pass is done: inline canvas editing for both the welcome
 screen and question titles, toggle switches replacing checkboxes, the
 full design-token sweep, a Draft status pill, a skeleton loading state
-on the dashboard, and every toolbar control now doing something real.
-What remains is the short
-deferred-polish list above — none of it blocking, all of it tracked
-with reasoning rather than silently dropped.
+on the dashboard, a Yes/No tile in the type picker, response counts on
+draft cards, and every control in the app either doing something real or
+gone. CSV export shipped last, as the one bonus feature attempted.
+
+What remains is the short deferred-polish list above — none of it
+blocking, all of it tracked with reasoning rather than silently dropped.
